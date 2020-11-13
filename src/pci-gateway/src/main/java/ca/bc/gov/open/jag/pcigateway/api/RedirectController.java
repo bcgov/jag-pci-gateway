@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
@@ -36,20 +37,20 @@ public class RedirectController {
     }
 
     @GetMapping("/pcigw")
-    public RedirectView localRedirect(HttpServletRequest request) throws MalformedURLException {
+    public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
         String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
 
-        if(StringUtils.isBlank(hashValue)) throw new RuntimeException("to be replaced");
+        if(StringUtils.isBlank(hashValue)) throw new MissingServletRequestParameterException("hashValue","string");
 
-        if(!validateHash(getQueryStringNoHashValue(request), clientProperty.getGatewayHashKey(), hashValue)) throw new RuntimeException("to be replaced");
+        if(!validateHash(getQueryStringNoHashValue(request), clientProperty.getGatewayHashKey(), hashValue)) throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
 
         String newHash = computeHash(getQueryStringNoHashValue(request), clientProperty.getHashKey());
 
         URI redirectURI = UriComponentsBuilder.fromUri(URI.create(appProperties.getRedirectUrl()))
-                .queryParams(swapHash(request.getParameterMap(), newHash))
+                .replaceQueryParams(swapHash(request.getParameterMap(), newHash))
                 .build().toUri();
 
         RedirectView redirectView = new RedirectView();
@@ -68,7 +69,7 @@ public class RedirectController {
 
     }
 
-    private GatewayClientProperty getGatewayClientProperty(HttpServletRequest request) {
+    private GatewayClientProperty getGatewayClientProperty(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         Optional<GatewayClientProperty> clientProperty = this.appProperties.getGatewayClients()
                 .stream()
@@ -76,7 +77,7 @@ public class RedirectController {
                 .findFirst();
 
         if(!clientProperty.isPresent()) {
-            throw new RuntimeException("to be replaced");
+            throw new MissingServletRequestParameterException("Property", "merchantId invalid");
         }
 
         return clientProperty.get();
@@ -100,5 +101,4 @@ public class RedirectController {
         return result;
 
     }
-
 }

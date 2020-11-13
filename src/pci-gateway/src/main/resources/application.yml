@@ -1,7 +1,13 @@
+server:
+  port: 8080
 pci-gateway:
-  redirect-url: ${REDIRECT_URL}
+  redirect-url: ENC(yourencryptedvalue)
   gateway-clients:
     -
       merchant-id: A
       hash-key: B
       gateway-hash-key: C
+
+jasypt:
+  encryptor:
+    password: ${ENC_PASSWORD}
