@@ -10,7 +10,7 @@ on:
 jobs:
   spring-boot:
     env:
-      CC_TEST_REPORTER_ID: TBD
+      CC_TEST_REPORTER_ID: aae899550bdc89de402e537456d007846bda71c64f7300294a61d1a68f6bfc43
     
     name: Create, format and upload Java coverage artifact
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
       # Formatting the BACKEND coverage reports generated (dynamically)
       - name: Format BACKEND coverage reports
         run: |
-          JACOCO_SOURCE_PATH=${{ github.workspace }}/src/document-merge-api/src/main/java ./cc-test-reporter format-coverage ${{github.workspace}}/src/document-merge-api/target/site/jacoco/jacoco.xml --input-type jacoco --output coverage/src-codeclimate.json;
+          JACOCO_SOURCE_PATH=${{ github.workspace }}/src/pci-gateway/src/main/java ./cc-test-reporter format-coverage ${{github.workspace}}/src/pci-gateway/target/site/jacoco/jacoco.xml --input-type jacoco --output coverage/src-codeclimate.json;
       # Upload total coverage report to Code Climate
-      # - name: Upload coverage report to Code Climate
-      #   run: ./cc-test-reporter upload-coverage -i coverage/src-codeclimate.json
+      - name: Upload coverage report to Code Climate
+        run: ./cc-test-reporter upload-coverage -i coverage/src-codeclimate.json
