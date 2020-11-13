@@ -50,7 +50,7 @@ public class RedirectController {
         String newHash = computeHash(getQueryStringNoHashValue(request), clientProperty.getHashKey());
 
         URI redirectURI = UriComponentsBuilder.fromUri(URI.create(appProperties.getRedirectUrl()))
-                .replaceQueryParams(swapHash(request.getParameterMap(), newHash))
+                .queryParams(swapHash(request.getParameterMap(), newHash))
                 .build().toUri();
 
         RedirectView redirectView = new RedirectView();
