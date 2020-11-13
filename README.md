@@ -17,5 +17,5 @@ mvn clean package -f src/pci-gateway/pom.xml
 ## Run
 
 ```bash
-java -jar pci-gateway-0.0.1-SNAPSHOT.jar --spring.config.location=file:application.yml
+java -Djasypt.encryptor.password=<yoursecret> -jar pci-gateway-0.0.1-SNAPSHOT.jar --spring.config.location=file:application.yml
 ```
