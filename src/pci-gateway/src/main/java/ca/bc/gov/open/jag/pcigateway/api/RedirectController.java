@@ -113,10 +113,9 @@ public class RedirectController {
 
         current.entrySet()
                 .stream()
-                .filter(x -> !StringUtils.equals(x.getKey(), Keys.PARAM_TRANS_HASH_VALUE))
                 .forEach(entry -> result.put(entry.getKey(), Arrays.asList(entry.getValue())));
 
-        result.add(Keys.PARAM_TRANS_HASH_VALUE, hash);
+        result.set(Keys.PARAM_TRANS_HASH_VALUE, hash);
 
         return result;
 
