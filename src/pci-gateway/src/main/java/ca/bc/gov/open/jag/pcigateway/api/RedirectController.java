@@ -36,7 +36,7 @@ public class RedirectController {
         this.appProperties = appProperties;
     }
 
-    @GetMapping("/pcigw")
+    @GetMapping("/pcigw/payment/payment.asp")
     public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         GatewayClientProperty clientProperty = getGatewayClientProperty(request);
