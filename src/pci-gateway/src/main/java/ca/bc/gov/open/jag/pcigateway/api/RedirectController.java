@@ -38,7 +38,7 @@ public class RedirectController {
     @GetMapping("/pcigw/Payment/Payment.asp")
     public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        GatewayClientProperty clientProperty = getGatewayClientProperty(request);
+        GatewayClientProperty clientProperty = getGatewayClientProperty(request, Keys.PARAM_MERCHANT_ID);
 
         String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
 
@@ -58,6 +58,27 @@ public class RedirectController {
         return redirectView;
     }
 
+    @GetMapping("/pcigw/process_transaction.asp")
+    public RedirectView statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
+        GatewayClientProperty clientProperty = getGatewayClientProperty(request, Keys.PARAM_CAMEL_MERCHANT_ID);
+
+        String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
+
+        if(StringUtils.isBlank(hashValue)) throw new MissingServletRequestParameterException("hashValue","string");
+
+        if(!validateHash(getSecuredQueryString(request), clientProperty.getGatewayHashKey(), hashValue)) throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
+
+        String newHash = computeHash(getSecuredQueryString(request), clientProperty.getHashKey());
+
+        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(appProperties.getRedirectUrl()))
+                .queryParams(swapHash(request.getParameterMap(), newHash))
+                .build().toUri();
+
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(redirectURI.toString());
+
+        return redirectView;
+    }
     private String getSecuredQueryString(HttpServletRequest request) {
         return StringUtils.substringBeforeLast(request.getQueryString(), "&" + Keys.PARAM_TRANS_HASH_VALUE);
     }
@@ -68,11 +89,11 @@ public class RedirectController {
 
     }
 
-    private GatewayClientProperty getGatewayClientProperty(HttpServletRequest request) throws MissingServletRequestParameterException {
+    private GatewayClientProperty getGatewayClientProperty(HttpServletRequest request, String requestIdKey) throws MissingServletRequestParameterException {
 
         Optional<GatewayClientProperty> clientProperty = this.appProperties.getGatewayClients()
                 .stream()
-                .filter(x -> StringUtils.equals(x.getMerchantId(), request.getParameter(Keys.PARAM_MERCHANT_ID)))
+                .filter(x -> StringUtils.equals(x.getMerchantId(), request.getParameter(requestIdKey)))
                 .findFirst();
 
         if(!clientProperty.isPresent()) {
