@@ -65,7 +65,7 @@ public class RedirectController {
 
     private boolean validateHash(String queryString, String hashKey, String hashValue) {
         // Compute the hash
-        return StringUtils.equals(hashValue, computeHash(queryString, hashKey));
+        return StringUtils.equalsIgnoreCase(hashValue, computeHash(queryString, hashKey));
 
     }
 
