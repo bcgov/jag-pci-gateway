@@ -1,27 +1,33 @@
 package ca.bc.gov.open.jag.pcigateway.config;
 
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 
 @Configuration
 public class GatewayConfig {
 
+
+    private final AppProperties appProperties;
+
+    public GatewayConfig(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
+
     @Bean
     public RestTemplate restTemplate() {
 
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 
-        CloseableHttpClient httpClient
-                = HttpClients.custom()
-                .setSSLHostnameVerifier(new NoopHostnameVerifier())
-                .build();
-        HttpComponentsClientHttpRequestFactory requestFactory
-                = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setHttpClient(httpClient);
+        if(StringUtils.isNotBlank(appProperties.getProxy().getHost())) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(appProperties.getProxy().getHost(), appProperties.getProxy().getPort()));
+            requestFactory.setProxy(proxy);
+        }
 
         return new RestTemplate(requestFactory);
     }
