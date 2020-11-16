@@ -48,7 +48,7 @@ public class RedirectController {
 
         String newHash = computeHash(getSecuredQueryString(request), clientProperty.getHashKey());
 
-        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{}/{}", appProperties.getRedirectUrl(), Keys.PAYMENT_PATH)))
+        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), Keys.PAYMENT_PATH)))
                 .queryParams(swapHash(request.getParameterMap(), newHash))
                 .build().toUri();
 
@@ -70,7 +70,7 @@ public class RedirectController {
 
         String newHash = computeHash(getSecuredQueryString(request), clientProperty.getHashKey());
 
-        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{}/{}", appProperties.getRedirectUrl(), Keys.PROCESS_TRANSACTION_PATH)))
+        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), Keys.PROCESS_TRANSACTION_PATH)))
                 .queryParams(swapHash(request.getParameterMap(), newHash))
                 .build().toUri();
 
