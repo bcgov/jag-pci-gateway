@@ -35,7 +35,7 @@ public class RedirectControllerTest {
     }
 
     @Test
-    @DisplayName("200: it should return a rewriten url")
+    @DisplayName("200: with valid parameters should rebuild url")
     public void withValidParamsShouldReturnValidUrl() throws MissingServletRequestParameterException {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
@@ -47,6 +47,38 @@ public class RedirectControllerTest {
         Assertions.assertEquals("http://localhost:8080?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413", result.getUrl());
 
     }
+
+    @Test
+    @DisplayName("200: with valid parameters and additional should rebuild url")
+    public void withValidParamsAndMoreShouldReturnValidUrl() throws MissingServletRequestParameterException {
+
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
+        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
+        mockHttpServletRequest.setParameter("otherparams", "otherparams");
+
+        RedirectView result = sut.localRedirect(mockHttpServletRequest);
+
+        Assertions.assertEquals("http://localhost:8080?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413&otherparams=otherparams", result.getUrl());
+
+    }
+
+    @Test
+    @DisplayName("400: without hash key should return bad request")
+    public void withoutHashKeyShouldReturn400() throws MissingServletRequestParameterException {
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+    }
+
+    @Test
+    @DisplayName("400: without merchant id should return bad request")
+    public void withMerchantIdShouldReturnBadRequest() throws MissingServletRequestParameterException {
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+    }
+
 
 
 
