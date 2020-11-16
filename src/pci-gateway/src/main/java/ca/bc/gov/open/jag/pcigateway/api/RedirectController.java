@@ -56,12 +56,19 @@ public class RedirectController {
         RedirectView redirectView = new RedirectView();
         redirectView.setUrl(redirectURI.toString());
 
-        return redirectView;
+        return processRequest(request,Keys.PARAM_MERCHANT_ID,Keys.PAYMENT_PATH);
     }
 
     @GetMapping("/pcigw/process_transaction.asp")
     public RedirectView statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
         GatewayClientProperty clientProperty = getGatewayClientProperty(request);
+
+        return processRequest(request,Keys.PARAM_CAMEL_MERCHANT_ID,Keys.PROCESS_TRANSACTION_PATH);
+
+    }
+
+    private RedirectView processRequest(HttpServletRequest request, String requestIdKey, String requestPath) throws MissingServletRequestParameterException {
+        GatewayClientProperty clientProperty = getGatewayClientProperty(request, requestIdKey);
 
         String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
 
@@ -71,7 +78,7 @@ public class RedirectController {
 
         String newHash = computeHash(getSecuredQueryString(request), clientProperty.getHashKey());
 
-        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), Keys.PROCESS_TRANSACTION_PATH)))
+        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), requestPath)))
                 .queryParams(swapHash(request.getParameterMap(), newHash))
                 .build().toUri();
 
@@ -80,6 +87,7 @@ public class RedirectController {
 
         return redirectView;
     }
+
     private String getSecuredQueryString(HttpServletRequest request) {
         return StringUtils.substringBeforeLast(request.getQueryString(), "&" + Keys.PARAM_TRANS_HASH_VALUE);
     }
