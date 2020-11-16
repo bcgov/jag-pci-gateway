@@ -8,12 +8,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -31,26 +33,30 @@ public class RedirectController {
     private Logger logger = LoggerFactory.getLogger(RedirectController.class);
 
     private final AppProperties appProperties;
+    private final RestTemplate restTemplate;
 
-    public RedirectController(AppProperties appProperties) {
+    public RedirectController(AppProperties appProperties, RestTemplate restTemplate) {
         this.appProperties = appProperties;
+        this.restTemplate = restTemplate;
     }
 
     @GetMapping("/pcigw/Payment/Payment.asp")
     public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        return processRequest(request,Keys.PAYMENT_PATH);
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(processRequest(request,Keys.PAYMENT_PATH).toString());
+        return redirectView;
 
     }
 
     @GetMapping("/pcigw/process_transaction.asp")
-    public RedirectView statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
+    public ResponseEntity<String> statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        return processRequest(request,Keys.PROCESS_TRANSACTION_PATH);
+        return this.restTemplate.getForEntity(processRequest(request,Keys.PROCESS_TRANSACTION_PATH), String.class);
 
     }
 
-    private RedirectView processRequest(HttpServletRequest request, String requestPath) throws MissingServletRequestParameterException {
+    private URI processRequest(HttpServletRequest request, String requestPath) throws MissingServletRequestParameterException {
         GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
         String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
@@ -61,14 +67,10 @@ public class RedirectController {
 
         String newHash = computeHash(getSecuredQueryString(request), clientProperty.getHashKey());
 
-        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), requestPath)))
+        return UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), requestPath)))
                 .queryParams(swapHash(request.getParameterMap(), newHash))
                 .build().toUri();
 
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(redirectURI.toString());
-
-        return redirectView;
     }
 
     private String getSecuredQueryString(HttpServletRequest request) {
