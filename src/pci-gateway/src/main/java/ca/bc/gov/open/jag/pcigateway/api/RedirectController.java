@@ -3,7 +3,7 @@ package ca.bc.gov.open.jag.pcigateway.api;
 import ca.bc.gov.open.jag.pcigateway.Keys;
 import ca.bc.gov.open.jag.pcigateway.config.AppProperties;
 import ca.bc.gov.open.jag.pcigateway.config.GatewayClientProperty;
-import ca.bc.gov.open.jag.pcigateway.utils.QueryStringUtils;
+import ca.bc.gov.open.jag.pcigateway.utils.HttpServletRequestUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -85,19 +85,14 @@ public class RedirectController {
 
     private GatewayClientProperty getGatewayClientProperty(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        Optional<String> merchantIdKey = QueryStringUtils.getMerchantId(request.getParameterNames());
+        Optional<String> merchantId = HttpServletRequestUtils.getMerchantId(request);
 
-        if(!merchantIdKey.isPresent())
-            throw new MissingServletRequestParameterException("Property", "merchantId is required");
-
-        String merchantId = request.getParameter(merchantIdKey.get());
-
-        if(StringUtils.isBlank(merchantId))
+        if(!merchantId.isPresent())
             throw new MissingServletRequestParameterException("Property", "merchantId is required");
 
         Optional<GatewayClientProperty> clientProperty = this.appProperties.getGatewayClients()
                 .stream()
-                .filter(x -> StringUtils.equals(x.getMerchantId(), merchantId))
+                .filter(x -> StringUtils.equals(x.getMerchantId(), merchantId.get()))
                 .findFirst();
 
         if(!clientProperty.isPresent()) {
