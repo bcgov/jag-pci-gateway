@@ -39,36 +39,19 @@ public class RedirectController {
     @GetMapping("/pcigw/Payment/Payment.asp")
     public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        GatewayClientProperty clientProperty = getGatewayClientProperty(request);
+        return processRequest(request,Keys.PAYMENT_PATH);
 
-        String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
-
-        if(StringUtils.isBlank(hashValue)) throw new MissingServletRequestParameterException("hashValue","string");
-
-        if(!validateHash(getSecuredQueryString(request), clientProperty.getGatewayHashKey(), hashValue)) throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
-
-        String newHash = computeHash(getSecuredQueryString(request), clientProperty.getHashKey());
-
-        URI redirectURI = UriComponentsBuilder.fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), Keys.PAYMENT_PATH)))
-                .queryParams(swapHash(request.getParameterMap(), newHash))
-                .build().toUri();
-
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(redirectURI.toString());
-
-        return processRequest(request,Keys.PARAM_MERCHANT_ID,Keys.PAYMENT_PATH);
     }
 
     @GetMapping("/pcigw/process_transaction.asp")
     public RedirectView statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
-        GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
-        return processRequest(request,Keys.PARAM_CAMEL_MERCHANT_ID,Keys.PROCESS_TRANSACTION_PATH);
+        return processRequest(request,Keys.PROCESS_TRANSACTION_PATH);
 
     }
 
-    private RedirectView processRequest(HttpServletRequest request, String requestIdKey, String requestPath) throws MissingServletRequestParameterException {
-        GatewayClientProperty clientProperty = getGatewayClientProperty(request, requestIdKey);
+    private RedirectView processRequest(HttpServletRequest request, String requestPath) throws MissingServletRequestParameterException {
+        GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
         String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
 
