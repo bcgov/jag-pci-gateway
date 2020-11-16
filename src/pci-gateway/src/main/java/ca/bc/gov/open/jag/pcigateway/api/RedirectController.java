@@ -17,7 +17,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -45,9 +44,9 @@ public class RedirectController {
 
         if(StringUtils.isBlank(hashValue)) throw new MissingServletRequestParameterException("hashValue","string");
 
-        if(!validateHash(getQueryStringNoHashValue(request), clientProperty.getGatewayHashKey(), hashValue)) throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
+        if(!validateHash(getSecuredQueryString(request), clientProperty.getGatewayHashKey(), hashValue)) throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
 
-        String newHash = computeHash(getQueryStringNoHashValue(request), clientProperty.getHashKey());
+        String newHash = computeHash(getSecuredQueryString(request), clientProperty.getHashKey());
 
         URI redirectURI = UriComponentsBuilder.fromUri(URI.create(appProperties.getRedirectUrl()))
                 .queryParams(swapHash(request.getParameterMap(), newHash))
@@ -59,8 +58,8 @@ public class RedirectController {
         return redirectView;
     }
 
-    private String getQueryStringNoHashValue(HttpServletRequest request) {
-        return StringUtils.substringBeforeLast(request.getQueryString(), "&");
+    private String getSecuredQueryString(HttpServletRequest request) {
+        return StringUtils.substringBeforeLast(request.getQueryString(), "&" + Keys.PARAM_TRANS_HASH_VALUE);
     }
 
     private boolean validateHash(String queryString, String hashKey, String hashValue) {
