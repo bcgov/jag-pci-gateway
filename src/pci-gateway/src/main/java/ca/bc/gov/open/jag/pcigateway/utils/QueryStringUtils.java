@@ -1,6 +1,11 @@
 package ca.bc.gov.open.jag.pcigateway.utils;
 
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Optional;
 
 public class QueryStringUtils {
@@ -18,6 +23,22 @@ public class QueryStringUtils {
         }
 
         return Optional.empty();
+    }
+
+
+    public static MultiValueMap<String, String> setParam(Map<String, String[]> current, String key, String value) {
+
+            MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
+
+            current.entrySet()
+                    .stream()
+                    .forEach(entry -> result.put(entry.getKey(), Arrays.asList(entry.getValue())));
+
+            result.set(key, value);
+
+            return result;
+
+
     }
 
 }
