@@ -44,7 +44,7 @@ public class RedirectControllerTest {
 
         RedirectView result = sut.localRedirect(mockHttpServletRequest);
 
-        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413", result.getUrl());
+        Assertions.assertEquals("http://localhost:8080/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413", result.getUrl());
 
     }
 
@@ -59,7 +59,7 @@ public class RedirectControllerTest {
 
         RedirectView result = sut.localRedirect(mockHttpServletRequest);
 
-        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413&otherparams=otherparams", result.getUrl());
+        Assertions.assertEquals("http://localhost:8080/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413&otherparams=otherparams", result.getUrl());
 
     }
 
