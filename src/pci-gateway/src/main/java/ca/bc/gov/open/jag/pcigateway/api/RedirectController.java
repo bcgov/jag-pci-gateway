@@ -3,6 +3,7 @@ package ca.bc.gov.open.jag.pcigateway.api;
 import ca.bc.gov.open.jag.pcigateway.Keys;
 import ca.bc.gov.open.jag.pcigateway.config.AppProperties;
 import ca.bc.gov.open.jag.pcigateway.config.GatewayClientProperty;
+import ca.bc.gov.open.jag.pcigateway.utils.QueryStringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class RedirectController {
     @GetMapping("/pcigw/Payment/Payment.asp")
     public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        GatewayClientProperty clientProperty = getGatewayClientProperty(request, Keys.PARAM_MERCHANT_ID);
+        GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
         String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
 
@@ -60,7 +61,7 @@ public class RedirectController {
 
     @GetMapping("/pcigw/process_transaction.asp")
     public RedirectView statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
-        GatewayClientProperty clientProperty = getGatewayClientProperty(request, Keys.PARAM_CAMEL_MERCHANT_ID);
+        GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
         String hashValue = request.getParameter(Keys.PARAM_TRANS_HASH_VALUE);
 
@@ -89,11 +90,21 @@ public class RedirectController {
 
     }
 
-    private GatewayClientProperty getGatewayClientProperty(HttpServletRequest request, String requestIdKey) throws MissingServletRequestParameterException {
+    private GatewayClientProperty getGatewayClientProperty(HttpServletRequest request) throws MissingServletRequestParameterException {
+
+        Optional<String> merchantIdKey = QueryStringUtils.getMerchantId(request.getParameterNames());
+
+        if(!merchantIdKey.isPresent())
+            throw new MissingServletRequestParameterException("Property", "merchantId is required");
+
+        String merchantId = request.getParameter(merchantIdKey.get());
+
+        if(StringUtils.isBlank(merchantId))
+            throw new MissingServletRequestParameterException("Property", "merchantId is required");
 
         Optional<GatewayClientProperty> clientProperty = this.appProperties.getGatewayClients()
                 .stream()
-                .filter(x -> StringUtils.equals(x.getMerchantId(), request.getParameter(requestIdKey)))
+                .filter(x -> StringUtils.equals(x.getMerchantId(), merchantId))
                 .findFirst();
 
         if(!clientProperty.isPresent()) {
