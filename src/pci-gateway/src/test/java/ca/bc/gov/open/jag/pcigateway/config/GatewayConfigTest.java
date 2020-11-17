@@ -14,8 +14,7 @@ public class GatewayConfigTest {
 
     ApplicationContextRunner context = new ApplicationContextRunner()
             .withUserConfiguration(AppProperties.class)
-            .withUserConfiguration(
-                    GatewayConfig.class);
+            .withUserConfiguration(GatewayConfig.class);
 
     ApplicationContextRunner context2 = new ApplicationContextRunner()
             .withPropertyValues(
