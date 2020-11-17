@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +80,37 @@ public class RedirectControllerTest {
     }
 
     @Test
+    @DisplayName("200: test variation of merchant it")
+    public void testVariationOfMerchantId() throws MissingServletRequestParameterException {
+
+
+        String[] merchantIdKeys = new String[] {
+                "merchantid",
+                "Merchantid",
+                "merchantId",
+                "MerchantId",
+                "merchant_id",
+                "Merchant_id",
+                "merchant_Id",
+                "Merchant_Id" };
+
+        for (String key :
+                merchantIdKeys) {
+
+            MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+            mockHttpServletRequest.setParameter(key, MERCHANT_ID);
+            mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
+            RedirectView actual = sut.localRedirect(mockHttpServletRequest);
+            String expected = MessageFormat.format(
+                    "http://localhost:8080/scripts/Payment/Payment.asp?{0}=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413"
+                    , key);
+            Assertions.assertEquals(expected, actual.getUrl());
+
+        }
+
+    }
+
+    @Test
     @DisplayName("400: without hash key should return bad request")
     public void withoutHashKeyShouldReturn400() throws MissingServletRequestParameterException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
@@ -90,6 +122,24 @@ public class RedirectControllerTest {
     @DisplayName("400: without merchant id should return bad request")
     public void withMerchantIdShouldReturnBadRequest() throws MissingServletRequestParameterException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+    }
+
+    @Test
+    @DisplayName("400: with invalid hash should return bad request")
+    public void withInvalidHashShouldReturnBadRequest() throws MissingServletRequestParameterException {
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
+        mockHttpServletRequest.setParameter("hashValue", "ACDC");
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+    }
+
+    @Test
+    @DisplayName("400: with unknown merchant id should return bad request")
+    public void withInvalidMerchantIdReturnBadRequest() throws MissingServletRequestParameterException {
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("merchant_id", "GNR");
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
         Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
     }
