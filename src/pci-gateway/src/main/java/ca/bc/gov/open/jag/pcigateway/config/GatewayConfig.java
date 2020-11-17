@@ -1,6 +1,7 @@
 package ca.bc.gov.open.jag.pcigateway.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -10,6 +11,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 @Configuration
+@EnableConfigurationProperties(AppProperties.class)
 public class GatewayConfig {
 
 
@@ -24,7 +26,7 @@ public class GatewayConfig {
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 
-        if(StringUtils.isNotBlank(appProperties.getProxy().getHost())) {
+        if(appProperties.getProxy() != null && StringUtils.isNotBlank(appProperties.getProxy().getHost())) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(appProperties.getProxy().getHost(), appProperties.getProxy().getPort()));
             requestFactory.setProxy(proxy);
         }
