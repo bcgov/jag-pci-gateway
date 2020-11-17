@@ -9,10 +9,8 @@ on:
     
 jobs:
   spring-boot:
-    env:
-      CC_TEST_REPORTER_ID: aae899550bdc89de402e537456d007846bda71c64f7300294a61d1a68f6bfc43
     
-    name: Create, format and upload Java coverage artifact
+    name: Build, Run Test and upload test coverage to code climate
     runs-on: ubuntu-latest
     
     steps:
@@ -26,20 +24,17 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - uses: actions/cache@v1
+      
+      # Cache maven dependencies
+      - name: Cache Java Dependencies
+        uses: actions/cache@v1
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-        
-      # Where am I?
-      - name: Where am I before Maven?
-        run: |
-          pwd
-          echo "WHERE AM I?"
-          ls
-        
+      
+      #P Push coverage to code climate
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v2.7.4
         env:
