@@ -13,3 +13,8 @@ plugins:
     enabled: true
   markdownlint:
     enabled: true
+exclude_patterns:
+  - "**/test/"
+  - "**/tests/"
+  - "Tests/"
+  - "**/*Application.java"
