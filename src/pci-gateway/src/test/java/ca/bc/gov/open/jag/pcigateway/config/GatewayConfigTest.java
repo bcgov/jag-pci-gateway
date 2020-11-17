@@ -13,6 +13,10 @@ public class GatewayConfigTest {
     private GatewayConfig sut;
 
     ApplicationContextRunner context = new ApplicationContextRunner()
+            .withUserConfiguration(AppProperties.class)
+            .withUserConfiguration(GatewayConfig.class);
+
+    ApplicationContextRunner context2 = new ApplicationContextRunner()
             .withPropertyValues(
                     "pci-gateway.proxy.host=localhost",
                     "pci-gateway.proxy.port=8080"
@@ -21,11 +25,29 @@ public class GatewayConfigTest {
             .withUserConfiguration(
                     GatewayConfig.class);
 
+    ApplicationContextRunner context3 = new ApplicationContextRunner()
+            .withPropertyValues(
+                    "pci-gateway.proxy.host= ",
+                    "pci-gateway.proxy.port=8080"
+            )
+            .withUserConfiguration(AppProperties.class)
+            .withUserConfiguration(
+                    GatewayConfig.class);
+
+
     @Test
     public void checkRegisteredBeans() {
 
 
         context.run(it -> {
+            assertThat(it).hasSingleBean(RestTemplate.class);
+        });
+
+        context2.run(it -> {
+            assertThat(it).hasSingleBean(RestTemplate.class);
+        });
+
+        context3.run(it -> {
             assertThat(it).hasSingleBean(RestTemplate.class);
         });
 

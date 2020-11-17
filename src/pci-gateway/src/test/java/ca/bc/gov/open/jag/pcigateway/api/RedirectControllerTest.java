@@ -119,6 +119,15 @@ public class RedirectControllerTest {
     }
 
     @Test
+    @DisplayName("400: with blank merchant id should return bad request")
+    public void withoutMerchantIdValueShouldReturnBadRequest() throws MissingServletRequestParameterException {
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("merchant_id", "  ");
+        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+    }
+
+    @Test
     @DisplayName("400: without merchant id should return bad request")
     public void withMerchantIdShouldReturnBadRequest() throws MissingServletRequestParameterException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
