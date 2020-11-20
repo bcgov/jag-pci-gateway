@@ -22,7 +22,9 @@ mvn clean package -f src/pci-gateway/pom.xml
 java -Djasypt.encryptor.password=<yoursecret> -jar pci-gateway-0.0.1-SNAPSHOT.jar --spring.config.location=file:application.yml
 ```
 
-## Ecryted Parameters
+## Encryted Parameters
+
+Download the [jasypt-1.9.3 binary](https://github.com/jasypt/jasypt/releases/tag/jasypt-1.9.3)
 
 To encrypt parameters run:
 
@@ -31,3 +33,9 @@ java -cp <yourjasyptlocation>/jasypt-1.9.3/lib/jasypt-1.9.3.jar org.jasypt.intf.
 ```
 
 Add secret in run command <yoursecret> and in application.yml wrap the encrypted value: ENC(xyz123==)
+
+ex:
+
+```yaml
+myproperty: ENC(your-encripted-string)
+```
