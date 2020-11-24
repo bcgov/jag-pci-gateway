@@ -9,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -40,8 +41,15 @@ public class RedirectController {
     @GetMapping("/pcigw/Payment/Payment.asp")
     public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
+        Optional<String> merchantId = HttpServletRequestUtils.getMerchantId(request);
+
+        logger.info("received new Payment redirect request for: {}", merchantId.isPresent() ?  merchantId.get() : "unknown");
+
         RedirectView redirectView = new RedirectView();
         redirectView.setUrl(processRequest(request,Keys.PAYMENT_PATH).toString());
+
+        logger.info("redirect path successfully generated: {}", merchantId.isPresent() ?  merchantId.get() : "unknown");
+
         return redirectView;
 
     }
@@ -49,7 +57,19 @@ public class RedirectController {
     @GetMapping("/pcigw/process_transaction.asp")
     public ResponseEntity<String> statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        return this.restTemplate.getForEntity(processRequest(request,Keys.PROCESS_TRANSACTION_PATH), String.class);
+        Optional<String> merchantId = HttpServletRequestUtils.getMerchantId(request);
+
+        logger.info("received new process transaction proxy request for: {}", merchantId.isPresent() ?  merchantId.get() : "unknown");
+
+        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request,Keys.PROCESS_TRANSACTION_PATH), String.class);
+
+        if(responseEntity.getStatusCode() == HttpStatus.OK) {
+            logger.info("Request for process transaction succeeded");
+        } else {
+            logger.error("Request for process transaction failed with status code {}", responseEntity.getStatusCodeValue());
+        }
+
+        return responseEntity;
 
     }
 
