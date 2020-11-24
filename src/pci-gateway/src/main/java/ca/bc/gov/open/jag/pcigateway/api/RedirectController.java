@@ -55,7 +55,7 @@ public class RedirectController {
     @GetMapping("/pcigw/process_transaction.asp")
     public ResponseEntity<String> statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        logger.info("received new process transaction proxy request for");
+        logger.info("received new process transaction proxy request");
 
         ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request,Keys.PROCESS_TRANSACTION_PATH), String.class);
 
