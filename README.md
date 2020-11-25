@@ -22,6 +22,34 @@ mvn clean package -f src/pci-gateway/pom.xml
 java -Djasypt.encryptor.password=<yoursecret> -jar pci-gateway-0.0.1-SNAPSHOT.jar --spring.config.location=file:application.yml
 ```
 
+## Logging
+
+### Log files
+
+Configure the following in the application yml
+
+```yml
+logging:
+ path: ./logs
+```
+
+### Splunk
+
+Package the application with the splunk profile enabled
+
+```bash
+mvn clean package -f src/pci-gateway/pom.xml -P splunk
+```
+
+Configure the following in the application yml
+
+```yml
+splunk:
+ url: http://localhost:8080
+ token: token
+ source: pci-gateway
+```
+
 ## Encryted Parameters
 
 Download the [jasypt-1.9.3 binary](https://github.com/jasypt/jasypt/releases/tag/jasypt-1.9.3)
