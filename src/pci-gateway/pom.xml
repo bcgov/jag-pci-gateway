@@ -65,6 +65,11 @@
 			<version>2.0.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>3.0.7</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -79,6 +84,32 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<profiles>
+
+		<profile>
+
+			<id>splunk</id>
+
+			<repositories>
+				<repository>
+					<id>splunk-artifactory</id>
+					<name>Splunk Releases</name>
+					<url>https://splunk.jfrog.io/splunk/ext-releases-local</url>
+				</repository>
+			</repositories>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.splunk.logging</groupId>
+					<artifactId>splunk-library-javalogging</artifactId>
+					<version>1.8.0</version>
+				</dependency>
+			</dependencies>
+
+		</profile>
+
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -87,8 +118,8 @@
 				<configuration>
 					<mainClass>ca.bc.gov.open.jag.pcigateway.PciGatewayApplication</mainClass>
 				</configuration>
-	
-			
+
+
 			</plugin>
 
 			<!-- jacoco code coverage -->
