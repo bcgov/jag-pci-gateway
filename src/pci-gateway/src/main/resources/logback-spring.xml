@@ -6,7 +6,6 @@
     <springProperty scope="context" name="SPLUNK_TOKEN" source="splunk.token"/>
     <springProperty scope="context" name="SPLUNK_SOURCE" source="splunk.source"/>
 
-
     <!--STDOUT-->
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
@@ -18,25 +17,30 @@
     </appender>
 
     <!--log file-->
-    <appender name="RollingFile"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS_PATH}/application.log</file>
-        <encoder
-                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-        </encoder>
+    <if condition='isDefined("LOGS_PATH")'>
+        <then>
+            <appender name="RollingFile"
+                      class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${LOGS_PATH}/application.log</file>
+                <encoder
+                        class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+                </encoder>
 
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS_PATH}/application-%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-    </appender>
+                <rollingPolicy
+                        class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <!-- rollover daily and when the file reaches 10 MegaBytes -->
+                    <fileNamePattern>${LOGS_PATH}/application-%d{yyyy-MM-dd}.%i.log
+                    </fileNamePattern>
+                    <timeBasedFileNamingAndTriggeringPolicy
+                            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                        <maxFileSize>10MB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                </rollingPolicy>
+            </appender>
+        </then>
+    </if>
+
 
     <!--Splunk-->
     <if condition='isDefined("SPLUNK_URL")'>
@@ -57,11 +61,14 @@
         </then>
     </if>
 
-
     <!-- LOG everything at INFO level -->
     <root level="info">
-        <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>
+        <if condition='isDefined("LOGS_PATH")'>
+            <then>
+                <appender-ref ref="RollingFile"/>
+            </then>
+        </if>
         <if condition='isDefined("SPLUNK_URL")'>
             <then>
                 <appender-ref ref="splunk"/>
