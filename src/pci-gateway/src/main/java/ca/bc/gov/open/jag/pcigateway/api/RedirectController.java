@@ -43,11 +43,7 @@ public class RedirectController {
 
         logger.info("received new Payment redirect request");
 
-        RedirectView redirectView = redirectRequest(request, Keys.PAYMENT_PATH);
-
-        logger.info("redirect path successfully generated");
-
-        return redirectView;
+        return redirectRequest(request, Keys.PAYMENT_PATH);
 
     }
 
@@ -56,11 +52,7 @@ public class RedirectController {
 
         logger.info("received new payment profile redirect request");
 
-        RedirectView redirectView = redirectRequest(request, Keys.PAYMENT_PROFILE);
-
-        logger.info("redirect path successfully generated");
-
-        return redirectView;
+        return redirectRequest(request, Keys.PAYMENT_PROFILE);
 
     }
 
@@ -82,10 +74,14 @@ public class RedirectController {
     }
 
     private RedirectView redirectRequest(HttpServletRequest request, String path) throws MissingServletRequestParameterException {
+
         RedirectView redirectView = new RedirectView();
         redirectView.setUrl(processRequest(request, path).toString());
 
+        logger.info("redirect path successfully generated");
+
         return redirectView;
+
     }
 
     private URI processRequest(HttpServletRequest request, String requestPath) throws MissingServletRequestParameterException {
