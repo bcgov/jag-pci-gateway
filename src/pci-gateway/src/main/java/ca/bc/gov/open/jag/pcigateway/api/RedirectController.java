@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
@@ -25,7 +27,7 @@ import java.text.MessageFormat;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/pcigw/")
 public class RedirectController {
 
     private Logger logger = LoggerFactory.getLogger(RedirectController.class);
@@ -38,30 +40,21 @@ public class RedirectController {
         this.restTemplate = restTemplate;
     }
 
-    @GetMapping("/pcigw/Payment/Payment.asp")
+    @GetMapping({"/{[P-p]ayment}/{[P-p]ayment\\.asp","/{[P-p]ayment[P-p]rofile}/{[W-w]ebform\\.asp}"})
     public RedirectView paymentRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         logger.info("received new Payment redirect request");
 
-        return redirectRequest(request, Keys.PAYMENT_PATH);
+        return redirectRequest(request);
 
     }
 
-    @GetMapping("/pcigw/paymentProfile/webform.asp")
-    public RedirectView profileRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
-
-        logger.info("received new payment profile redirect request");
-
-        return redirectRequest(request, Keys.PAYMENT_PROFILE);
-
-    }
-
-    @GetMapping("/pcigw/process_transaction.asp")
+    @GetMapping("/process_transaction.asp")
     public ResponseEntity<String> statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         logger.info("received new process transaction proxy request");
 
-        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request,Keys.PROCESS_TRANSACTION_PATH), String.class);
+        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request, request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS)), String.class);
 
         if(responseEntity.getStatusCode() == HttpStatus.OK) {
             logger.info("Request for process transaction succeeded");
@@ -73,10 +66,10 @@ public class RedirectController {
 
     }
 
-    private RedirectView redirectRequest(HttpServletRequest request, String path) throws MissingServletRequestParameterException {
+    private RedirectView redirectRequest(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(processRequest(request, path).toString());
+        redirectView.setUrl(processRequest(request, request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS)).toString());
 
         logger.info("redirect path successfully generated");
 
