@@ -6,7 +6,6 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -19,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RedirectControllerTest {
-
+public class PaymentRedirectTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String REDIRECT_URL = "http://localhost:8080";
 
@@ -152,25 +150,5 @@ public class RedirectControllerTest {
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
         Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.paymentRedirect(mockHttpServletRequest));
     }
-
-
-    @Test
-    @DisplayName("200: Transaction status check should execute request")
-    public void withValidParamsShouldExecuteHttpCallToRemoteService() throws MissingServletRequestParameterException {
-
-
-        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-        mockHttpServletRequest.setParameter("otherparams", "otherparams");
-
-        ResponseEntity<String> actual = sut.statusRedirect(mockHttpServletRequest);
-
-        Assertions.assertEquals(HttpStatus.OK, actual.getStatusCode());
-
-
-    }
-
-
 
 }

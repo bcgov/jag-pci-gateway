@@ -83,7 +83,7 @@ public class RedirectController {
 
     private RedirectView redirectRequest(HttpServletRequest request, String path) throws MissingServletRequestParameterException {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(processRequest(request,Keys.PAYMENT_PATH).toString());
+        redirectView.setUrl(processRequest(request, path).toString());
 
         return redirectView;
     }
