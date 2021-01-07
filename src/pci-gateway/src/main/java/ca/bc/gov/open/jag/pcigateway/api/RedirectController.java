@@ -39,12 +39,24 @@ public class RedirectController {
     }
 
     @GetMapping("/pcigw/Payment/Payment.asp")
-    public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
+    public RedirectView paymentRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         logger.info("received new Payment redirect request");
 
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(processRequest(request,Keys.PAYMENT_PATH).toString());
+        RedirectView redirectView = redirectRequest(request, Keys.PAYMENT_PATH);
+
+        logger.info("redirect path successfully generated");
+
+        return redirectView;
+
+    }
+
+    @GetMapping("/pcigw/paymentProfile/webform.asp")
+    public RedirectView profileRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
+
+        logger.info("received new payment profile redirect request");
+
+        RedirectView redirectView = redirectRequest(request, Keys.PAYMENT_PROFILE);
 
         logger.info("redirect path successfully generated");
 
@@ -67,6 +79,13 @@ public class RedirectController {
 
         return responseEntity;
 
+    }
+
+    private RedirectView redirectRequest(HttpServletRequest request, String path) throws MissingServletRequestParameterException {
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(processRequest(request,Keys.PAYMENT_PATH).toString());
+
+        return redirectView;
     }
 
     private URI processRequest(HttpServletRequest request, String requestPath) throws MissingServletRequestParameterException {
