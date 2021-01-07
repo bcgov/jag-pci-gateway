@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+
+  #############################################################################################
+  ###                                   PCI Gateway                                         ###
+  #############################################################################################
+  pci-gateway:
+    container_name: pci-gateway
+    hostname: pci-gateway
+    build:
+      context: ./src/pci-gateway
+    ports:
+      - "8080:8080"
+
+    networks:
+      - pcigw-net
+
+networks:
+  pcigw-net:
+    driver: "bridge"
