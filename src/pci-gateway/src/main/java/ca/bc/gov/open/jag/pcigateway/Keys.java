@@ -7,7 +7,6 @@ public class Keys {
     public static final String PARAM_HASH_VALUE = "hashValue";
     public static final String SCRIPTS = "scripts";
     public static final String PCIGW = "/pcigw";
-    public static final String PROCESS_TRANSACTION_PATH = "scripts/process_transaction.asp";
     public static final String PAYMENT = "v1/payments";
 
 }
