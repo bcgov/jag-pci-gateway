@@ -41,7 +41,7 @@ public class RedirectController {
     }
 
     @GetMapping({"/{[P-p]ayment}/{[P-p]ayment\\.asp","/{[P-p]ayment[P-p]rofile}/{[W-w]ebform\\.asp}"})
-    public RedirectView paymentRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
+    public RedirectView requestRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         logger.info("received new Payment redirect request");
 
@@ -54,7 +54,7 @@ public class RedirectController {
 
         logger.info("received new process transaction proxy request");
 
-        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request, request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS)), String.class);
+        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request), String.class);
 
         if(responseEntity.getStatusCode() == HttpStatus.OK) {
             logger.info("Request for process transaction succeeded");
@@ -69,7 +69,7 @@ public class RedirectController {
     private RedirectView redirectRequest(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(processRequest(request, request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS)).toString());
+        redirectView.setUrl(processRequest(request).toString());
 
         logger.info("redirect path successfully generated");
 
@@ -77,7 +77,7 @@ public class RedirectController {
 
     }
 
-    private URI processRequest(HttpServletRequest request, String requestPath) throws MissingServletRequestParameterException {
+    private URI processRequest(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
@@ -88,7 +88,7 @@ public class RedirectController {
             throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
 
         return UriComponentsBuilder
-                .fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), requestPath)))
+                .fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS))))
                 .queryParams(QueryStringUtils.setParam(request.getParameterMap(), Keys.PARAM_HASH_VALUE,
                         computeHash(getSecuredQueryString(request), clientProperty.getHashKey())))
                 .build().toUri();
