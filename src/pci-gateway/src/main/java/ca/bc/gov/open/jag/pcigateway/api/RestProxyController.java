@@ -46,20 +46,12 @@ public class RestProxyController {
                                                  @RequestBody String body) {
         logger.info("received new process transaction proxy request");
 
-        ResponseEntity<String> responseEntity;
-
         try {
-            responseEntity = this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
+            return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getMessage());
         }
-        if(responseEntity.getStatusCode() == HttpStatus.OK) {
-            logger.info("Request for process transaction succeeded");
-        } else {
-            logger.error("Request for process transaction failed with status code {}", responseEntity.getStatusCodeValue());
-        }
 
-        return responseEntity;
     }
 
     private HttpEntity<String> processRequest(String passcode, String body) {
