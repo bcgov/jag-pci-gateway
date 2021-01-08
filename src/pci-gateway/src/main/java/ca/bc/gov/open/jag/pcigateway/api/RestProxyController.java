@@ -49,7 +49,7 @@ public class RestProxyController {
         try {
             return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
         } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode().value()).body(e.getMessage());
+            return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
 
     }
