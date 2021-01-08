@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,8 +46,13 @@ public class RestProxyController {
                                                  @RequestBody String body) {
         logger.info("received new process transaction proxy request");
 
-        ResponseEntity<String> responseEntity = this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl() ,request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
+        ResponseEntity<String> responseEntity;
 
+        try {
+            responseEntity = this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode().value()).body(e.getMessage());
+        }
         if(responseEntity.getStatusCode() == HttpStatus.OK) {
             logger.info("Request for process transaction succeeded");
         } else {
