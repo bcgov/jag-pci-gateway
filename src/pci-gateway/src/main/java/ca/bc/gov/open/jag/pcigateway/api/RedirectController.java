@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
@@ -25,7 +27,7 @@ import java.text.MessageFormat;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/pcigw/")
 public class RedirectController {
 
     private Logger logger = LoggerFactory.getLogger(RedirectController.class);
@@ -38,26 +40,21 @@ public class RedirectController {
         this.restTemplate = restTemplate;
     }
 
-    @GetMapping("/pcigw/Payment/Payment.asp")
-    public RedirectView localRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
+    @GetMapping({"/{[P-p]ayment}/{[P-p]ayment\\.asp","/{[P-p]ayment[P-p]rofile}/{[W-w]ebform\\.asp}"})
+    public RedirectView requestRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        logger.info("received new Payment redirect request");
+        logger.info("received new redirect request");
 
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(processRequest(request,Keys.PAYMENT_PATH).toString());
-
-        logger.info("redirect path successfully generated");
-
-        return redirectView;
+        return redirectRequest(request);
 
     }
 
-    @GetMapping("/pcigw/process_transaction.asp")
+    @GetMapping("/process_transaction.asp")
     public ResponseEntity<String> statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         logger.info("received new process transaction proxy request");
 
-        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request,Keys.PROCESS_TRANSACTION_PATH), String.class);
+        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request), String.class);
 
         if(responseEntity.getStatusCode() == HttpStatus.OK) {
             logger.info("Request for process transaction succeeded");
@@ -69,7 +66,18 @@ public class RedirectController {
 
     }
 
-    private URI processRequest(HttpServletRequest request, String requestPath) throws MissingServletRequestParameterException {
+    private RedirectView redirectRequest(HttpServletRequest request) throws MissingServletRequestParameterException {
+
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(processRequest(request).toString());
+
+        logger.info("redirect path successfully generated");
+
+        return redirectView;
+
+    }
+
+    private URI processRequest(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         GatewayClientProperty clientProperty = getGatewayClientProperty(request);
 
@@ -80,7 +88,7 @@ public class RedirectController {
             throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
 
         return UriComponentsBuilder
-                .fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), requestPath)))
+                .fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS))))
                 .queryParams(QueryStringUtils.setParam(request.getParameterMap(), Keys.PARAM_HASH_VALUE,
                         computeHash(getSecuredQueryString(request), clientProperty.getHashKey())))
                 .build().toUri();
