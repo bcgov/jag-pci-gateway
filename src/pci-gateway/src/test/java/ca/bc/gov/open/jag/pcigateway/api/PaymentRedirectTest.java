@@ -21,6 +21,7 @@ import java.util.List;
 public class PaymentRedirectTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String REDIRECT_URL = "http://localhost:8080";
+    public static final String REQUEST_URI = "/pcigw/Payment/Payment.asp";
 
     private RedirectController sut;
 
@@ -53,6 +54,7 @@ public class PaymentRedirectTest {
     public void withValidParamsShouldReturnValidUrl() throws MissingServletRequestParameterException {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
 
@@ -67,6 +69,7 @@ public class PaymentRedirectTest {
     public void withValidParamsAndMoreShouldReturnValidUrl() throws MissingServletRequestParameterException {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
         mockHttpServletRequest.setParameter("otherparams", "otherparams");
@@ -96,6 +99,7 @@ public class PaymentRedirectTest {
                 merchantIdKeys) {
 
             MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+            mockHttpServletRequest.setRequestURI(REQUEST_URI);
             mockHttpServletRequest.setParameter(key, MERCHANT_ID);
             mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
             RedirectView actual = sut.paymentRedirect(mockHttpServletRequest);
