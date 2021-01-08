@@ -66,7 +66,7 @@ public class RestProxyController {
         if (!properties.isPresent()) throw new RuntimeException("NO");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization",MessageFormat.format("Passcode {0}", Base64.getEncoder().encodeToString(MessageFormat.format("{0}:{1}", properties.get().getMerchantId(),properties.get().getApiKey()).getBytes())));
+        headers.add("Authorization", MessageFormat.format("Passcode {0}", Base64.getEncoder().encodeToString(MessageFormat.format("{0}:{1}", properties.get().getMerchantId(),properties.get().getApiKey()).getBytes())));
 
         return new HttpEntity<>(body, headers);
     }
