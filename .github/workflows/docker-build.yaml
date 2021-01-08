@@ -8,7 +8,7 @@ on:
 
 jobs:
   docker-build:
-    name: Ensure Docker Builds Without Error
+    name: Build docker images
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,6 +26,6 @@ jobs:
             ${{ runner.os }}-docker-image-
 
       # Build Docker and Run Tests
-      - name: build docker
+      - name: Build docker image
         run: |
           docker-compose build
