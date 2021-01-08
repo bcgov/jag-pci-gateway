@@ -43,7 +43,7 @@ public class RedirectController {
     @GetMapping({"/{[P-p]ayment}/{[P-p]ayment\\.asp","/{[P-p]ayment[P-p]rofile}/{[W-w]ebform\\.asp}"})
     public RedirectView requestRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
-        logger.info("received new Payment redirect request");
+        logger.info("received new redirect request");
 
         return redirectRequest(request);
 
