@@ -47,7 +47,7 @@ public class RestProxyController {
         logger.info("received new process transaction proxy request");
 
         try {
-            return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
+            return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getApiUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
