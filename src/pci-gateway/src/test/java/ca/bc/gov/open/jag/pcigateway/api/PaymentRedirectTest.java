@@ -6,7 +6,6 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -19,10 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RedirectControllerTest {
-
+public class PaymentRedirectTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String REDIRECT_URL = "http://localhost:8080";
+    public static final String REQUEST_URI = "/pcigw/Payment/Payment.asp";
 
     private RedirectController sut;
 
@@ -55,10 +54,11 @@ public class RedirectControllerTest {
     public void withValidParamsShouldReturnValidUrl() throws MissingServletRequestParameterException {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
 
-        RedirectView result = sut.localRedirect(mockHttpServletRequest);
+        RedirectView result = sut.requestRedirect(mockHttpServletRequest);
 
         Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413", result.getUrl());
 
@@ -69,11 +69,12 @@ public class RedirectControllerTest {
     public void withValidParamsAndMoreShouldReturnValidUrl() throws MissingServletRequestParameterException {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
         mockHttpServletRequest.setParameter("otherparams", "otherparams");
 
-        RedirectView result = sut.localRedirect(mockHttpServletRequest);
+        RedirectView result = sut.requestRedirect(mockHttpServletRequest);
 
         Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413&otherparams=otherparams", result.getUrl());
 
@@ -98,9 +99,10 @@ public class RedirectControllerTest {
                 merchantIdKeys) {
 
             MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+            mockHttpServletRequest.setRequestURI(REQUEST_URI);
             mockHttpServletRequest.setParameter(key, MERCHANT_ID);
             mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-            RedirectView actual = sut.localRedirect(mockHttpServletRequest);
+            RedirectView actual = sut.requestRedirect(mockHttpServletRequest);
             String expected = MessageFormat.format(
                     "http://localhost:8080/scripts/Payment/Payment.asp?{0}=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413"
                     , key);
@@ -115,7 +117,7 @@ public class RedirectControllerTest {
     public void withoutHashKeyShouldReturn400() throws MissingServletRequestParameterException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.requestRedirect(mockHttpServletRequest));
     }
 
     @Test
@@ -124,7 +126,7 @@ public class RedirectControllerTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("merchant_id", "  ");
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.requestRedirect(mockHttpServletRequest));
     }
 
     @Test
@@ -132,7 +134,7 @@ public class RedirectControllerTest {
     public void withMerchantIdShouldReturnBadRequest() throws MissingServletRequestParameterException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.requestRedirect(mockHttpServletRequest));
     }
 
     @Test
@@ -141,7 +143,7 @@ public class RedirectControllerTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
         mockHttpServletRequest.setParameter("hashValue", "ACDC");
-        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.requestRedirect(mockHttpServletRequest));
     }
 
     @Test
@@ -150,27 +152,7 @@ public class RedirectControllerTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("merchant_id", "GNR");
         mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.localRedirect(mockHttpServletRequest));
+        Assertions.assertThrows(MissingServletRequestParameterException.class, () ->  sut.requestRedirect(mockHttpServletRequest));
     }
-
-
-    @Test
-    @DisplayName("200: Transaction status check should execute request")
-    public void withValidParamsShouldExecuteHttpCallToRemoteService() throws MissingServletRequestParameterException {
-
-
-        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-        mockHttpServletRequest.setParameter("otherparams", "otherparams");
-
-        ResponseEntity<String> actual = sut.statusRedirect(mockHttpServletRequest);
-
-        Assertions.assertEquals(HttpStatus.OK, actual.getStatusCode());
-
-
-    }
-
-
 
 }
