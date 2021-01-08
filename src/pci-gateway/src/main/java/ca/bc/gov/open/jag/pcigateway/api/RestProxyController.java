@@ -57,9 +57,7 @@ public class RestProxyController {
 
     private HttpEntity<String> processRequest(String passcode, String body) {
 
-        String key = passcode.replace("Passcode ", "");
-
-        List<String> keys = Arrays.asList(new String(Base64.getDecoder().decode(key)).split(":"));
+        List<String> keys = Arrays.asList(new String(Base64.getDecoder().decode(passcode)).split(":"));
 
         Optional<GatewayRestClientProperties> properties = appProperties.getGatewayRestClients().stream()
                 .filter(property -> property.getMerchantId().equals(keys.get(0)) && property.getGatewayApiKey().equals(keys.get(1))).findFirst();
