@@ -40,11 +40,11 @@ public class RestProxyController {
 
     @PostMapping("/payments")
     public ResponseEntity<String> statusRedirect(HttpServletRequest request,
-                                                 @RequestHeader("Passcode") String passcode,
+                                                 @RequestHeader("Authorization") String passcode,
                                                  @RequestBody String body) {
         logger.info("received new process transaction proxy request");
 
-        ResponseEntity<String> responseEntity = this.restTemplate.postForEntity(request.getRequestURI().replace(Keys.PCIGW, Keys.REST), processRequest(passcode, body), String.class);
+        ResponseEntity<String> responseEntity = this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl() ,request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
 
         if(responseEntity.getStatusCode() == HttpStatus.OK) {
             logger.info("Request for process transaction succeeded");
@@ -57,7 +57,9 @@ public class RestProxyController {
 
     private HttpEntity<String> processRequest(String passcode, String body) {
 
-        List<String> keys = Arrays.asList(new String(Base64.getDecoder().decode(passcode)).split(":"));
+        String key = passcode.replace("Passcode ", "");
+
+        List<String> keys = Arrays.asList(new String(Base64.getDecoder().decode(key)).split(":"));
 
         Optional<GatewayRestClientProperties> properties = appProperties.getGatewayRestClients().stream()
                 .filter(property -> property.getMerchantId().equals(keys.get(0)) && property.getGatewayApiKey().equals(keys.get(1))).findFirst();
@@ -65,7 +67,7 @@ public class RestProxyController {
         if (!properties.isPresent()) throw new RuntimeException("NO");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Passcode", Base64.getEncoder().encodeToString(MessageFormat.format("{0}:{1}", properties.get().getMerchantId(),properties.get().getApiKey()).getBytes()));
+        headers.add("Authorization",MessageFormat.format("Passcode {0}", Base64.getEncoder().encodeToString(MessageFormat.format("{0}:{1}", properties.get().getMerchantId(),properties.get().getApiKey()).getBytes())));
 
         return new HttpEntity<>(body, headers);
     }
