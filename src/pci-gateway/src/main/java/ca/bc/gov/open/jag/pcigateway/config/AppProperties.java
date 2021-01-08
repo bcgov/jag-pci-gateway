@@ -12,6 +12,8 @@ public class AppProperties {
 
     private List<GatewayClientProperty> gatewayClients = new ArrayList<>();
 
+    private List<GatewayRestClientProperties> gatewayRestClients = new ArrayList<>();
+
     private Proxy proxy;
 
     public String getRedirectUrl() {
@@ -28,6 +30,14 @@ public class AppProperties {
 
     public void setGatewayClients(List<GatewayClientProperty> gatewayClients) {
         this.gatewayClients = gatewayClients;
+    }
+
+    public List<GatewayRestClientProperties> getGatewayRestClients() {
+        return gatewayRestClients;
+    }
+
+    public void setGatewayRestClients(List<GatewayRestClientProperties> gatewayRestClients) {
+        this.gatewayRestClients = gatewayRestClients;
     }
 
     public Proxy getProxy() {
