@@ -1,0 +1,21 @@
+server:
+  port: 8080
+pci-gateway:
+  redirect-url: http://localhost:8081/anything
+  gateway-clients:
+    -
+      merchant-id: 1234
+      hash-key: RANDOM
+      gateway-hash-key: RESTASSURED
+
+# to enable log files, comment out the following logging object and configure the path
+
+#logging:
+#  path: ./logs
+
+# To enable splunk, just comment out the following splunk object and configure url, token and source
+
+#splunk:
+#  url: http://localhost:8080
+#  token: token
+#  source: pci-gateway

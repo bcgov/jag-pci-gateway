@@ -23,6 +23,13 @@
             </modules>
         </profile>
 
+        <profile>
+            <id>cucumber</id>
+            <modules>
+                <module>pci-gateway-test-runner</module>
+            </modules>
+        </profile>
+
     </profiles>
 
 </project>
