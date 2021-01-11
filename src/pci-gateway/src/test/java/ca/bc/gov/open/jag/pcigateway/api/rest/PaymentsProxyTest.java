@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class PaymentsProxyTest {
     public static final String BODY_400 = "{test:400}";
 
     @Mock
-    RestTemplate restTemplateMock;
+    private RestTemplate restTemplateMock;
 
     private RestProxyController sut;
 
@@ -60,7 +61,7 @@ public class PaymentsProxyTest {
     @DisplayName("200: call to bambora succeeded")
     public void withValidApiKeyCallBambora() {
 
-        Mockito.when(restTemplateMock.postForEntity(ArgumentMatchers.eq(""), ArgumentMatchers.isA(HttpEntity.class), ArgumentMatchers.eq(String.class))).thenReturn(ResponseEntity.ok(""));
+        Mockito.when(restTemplateMock.postForEntity(ArgumentMatchers.isA(String.class), any(), any())).thenReturn(ResponseEntity.ok(""));
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
@@ -75,7 +76,7 @@ public class PaymentsProxyTest {
     @DisplayName("400: call to bambora failed")
     public void withValidApiKeyBamboraCallFails() {
 
-        Mockito.when(restTemplateMock.postForEntity(any(), any(), any())).thenReturn(ResponseEntity.badRequest().body(""));
+        Mockito.when(restTemplateMock.postForEntity(ArgumentMatchers.isA(String.class), any(), any())).thenReturn(ResponseEntity.badRequest().body(""));
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
