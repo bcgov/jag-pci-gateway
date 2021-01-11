@@ -1,22 +1,18 @@
 package ca.bc.gov.open.jag.pcigateway.api.rest;
 
-import ca.bc.gov.open.jag.pcigateway.api.RedirectController;
 import ca.bc.gov.open.jag.pcigateway.api.RestProxyController;
 import ca.bc.gov.open.jag.pcigateway.config.AppProperties;
-import ca.bc.gov.open.jag.pcigateway.config.GatewayClientProperty;
 import ca.bc.gov.open.jag.pcigateway.config.GatewayRestClientProperties;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
