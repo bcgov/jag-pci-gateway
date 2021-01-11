@@ -38,7 +38,7 @@ public class RestProxyController {
     }
 
 
-    @PostMapping("/payments")
+    @PostMapping({"/payments", "/profiles", "/reports"})
     public ResponseEntity<String> paymentsProxy(HttpServletRequest request,
                                                  @RequestHeader("Authorization") String passcode,
                                                  @RequestBody String body) {
