@@ -1,0 +1,31 @@
+name: Docker Build
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  docker-build:
+    name: Build docker images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # In this step, this action saves a list of existing images,
+      # the cache is created without them in the post run.
+      # It also restores the cache if it exists.
+      - name: Pull the previously cached images.
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+        with:
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('**/Dockerfile*', '**/docker-compose.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+      # Build Docker and Run Tests
+      - name: Build docker image
+        run: |
+          docker-compose build
