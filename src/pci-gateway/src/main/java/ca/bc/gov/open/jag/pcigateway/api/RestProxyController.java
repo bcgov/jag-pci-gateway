@@ -41,7 +41,7 @@ public class RestProxyController {
 
 
     @PostMapping("/payments")
-    public ResponseEntity<String> statusRedirect(HttpServletRequest request,
+    public ResponseEntity<String> paymentsProxy(HttpServletRequest request,
                                                  @RequestHeader("Authorization") String passcode,
                                                  @RequestBody String body) {
         logger.info("received new process transaction proxy request");
@@ -63,7 +63,7 @@ public class RestProxyController {
         Optional<GatewayRestClientProperties> properties = appProperties.getGatewayRestClients().stream()
                 .filter(property -> property.getMerchantId().equals(keys.get(0)) && property.getGatewayApiKey().equals(keys.get(1))).findFirst();
 
-        if (!properties.isPresent()) throw new RuntimeException("NO");
+        if (!properties.isPresent()) throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", MessageFormat.format("Passcode {0}", Base64.getEncoder().encodeToString(MessageFormat.format("{0}:{1}", properties.get().getMerchantId(),properties.get().getApiKey()).getBytes())));

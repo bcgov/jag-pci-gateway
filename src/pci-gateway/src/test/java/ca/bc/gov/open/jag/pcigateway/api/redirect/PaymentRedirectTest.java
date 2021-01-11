@@ -1,5 +1,6 @@
-package ca.bc.gov.open.jag.pcigateway.api;
+package ca.bc.gov.open.jag.pcigateway.api.redirect;
 
+import ca.bc.gov.open.jag.pcigateway.api.RedirectController;
 import ca.bc.gov.open.jag.pcigateway.config.AppProperties;
 import ca.bc.gov.open.jag.pcigateway.config.GatewayClientProperty;
 import org.junit.jupiter.api.*;
