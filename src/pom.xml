@@ -20,6 +20,12 @@
             <id>all</id>
             <modules>
                 <module>pci-gateway</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>cucumber</id>
+            <modules>
                 <module>pci-gateway-test-runner</module>
             </modules>
         </profile>
