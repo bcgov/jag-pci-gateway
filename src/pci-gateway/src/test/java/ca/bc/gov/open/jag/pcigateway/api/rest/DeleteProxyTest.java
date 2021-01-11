@@ -22,12 +22,9 @@ import static org.mockito.ArgumentMatchers.any;
 public class DeleteProxyTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String API_URL = "http://localhost:8080";
-    public static final String REQUEST_URI = "/pcigw/payments";
+    public static final String REQUEST_URI = "/pcigw/profiles/123";
     public static final String PASSCODE_FOUND = "Passcode bWVyY2hhbnRJZDpC";
     public static final String PASSCODE_NOT_FOUND = "Passcode bWVyY2hhbnRJZDpD";
-    public static final String BODY_200 = "{test:200}";
-    public static final String BODY_400 = "{test:400}";
-    public static final String PROFILE_ID = "123";
 
     @Mock
     private RestTemplate restTemplateMock;
@@ -64,7 +61,7 @@ public class DeleteProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.deleteProxy(mockHttpServletRequest, PASSCODE_FOUND, PROFILE_ID);
+        ResponseEntity<String> result = sut.deleteProxy(mockHttpServletRequest, PASSCODE_FOUND);
 
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
 
@@ -79,7 +76,7 @@ public class DeleteProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.deleteProxy(mockHttpServletRequest, PASSCODE_FOUND, PROFILE_ID);
+        ResponseEntity<String> result = sut.deleteProxy(mockHttpServletRequest, PASSCODE_FOUND);
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
@@ -92,7 +89,7 @@ public class DeleteProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.deleteProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND, PROFILE_ID);
+        ResponseEntity<String> result = sut.deleteProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND);
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
 
