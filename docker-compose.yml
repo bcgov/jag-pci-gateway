@@ -11,7 +11,20 @@ services:
       context: ./src/pci-gateway
     ports:
       - "8080:8080"
+    environment:
+      - "spring_profiles_active=local"
+    networks:
+      - pcigw-net
 
+  #############################################################################################
+  ###                                   Http bin (used for testing)                         ###
+  #############################################################################################
+  http-bin:
+    container_name: http-bin
+    hostname: http-bin
+    image: kennethreitz/httpbin
+    ports:
+      - "8081:80"
     networks:
       - pcigw-net
 

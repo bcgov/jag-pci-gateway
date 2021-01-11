@@ -20,6 +20,7 @@
             <id>all</id>
             <modules>
                 <module>pci-gateway</module>
+                <module>pci-gateway-test-runner</module>
             </modules>
         </profile>
 
