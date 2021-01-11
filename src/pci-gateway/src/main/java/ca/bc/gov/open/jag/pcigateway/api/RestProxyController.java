@@ -5,16 +5,10 @@ import ca.bc.gov.open.jag.pcigateway.config.AppProperties;
 import ca.bc.gov.open.jag.pcigateway.config.GatewayRestClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -39,10 +33,10 @@ public class RestProxyController {
 
 
     @PostMapping({"/payments", "/profiles", "/reports"})
-    public ResponseEntity<String> paymentsProxy(HttpServletRequest request,
-                                                 @RequestHeader("Authorization") String passcode,
-                                                 @RequestBody String body) {
-        logger.info("received new process transaction proxy request");
+    public ResponseEntity<String> postProxy(HttpServletRequest request,
+                                            @RequestHeader("Authorization") String passcode,
+                                            @RequestBody String body) {
+        logger.info("received new post proxy request");
 
         try {
             return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getApiUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
@@ -50,6 +44,18 @@ public class RestProxyController {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
 
+    }
+
+    @DeleteMapping("/profiles/{profileId}")
+    public ResponseEntity<String> deleteProxy(HttpServletRequest request,
+                                              @RequestHeader("Authorization") String passcode,
+                                              @PathVariable String profileId) {
+        logger.info("received new delete proxy request");
+        try {
+            return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getApiUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), HttpMethod.DELETE, processRequest(passcode,""), String.class);
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
+        }
     }
 
     private HttpEntity<String> processRequest(String passcode, String body) {
