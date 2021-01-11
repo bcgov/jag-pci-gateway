@@ -32,21 +32,21 @@ public class RestProxyController {
     }
 
 
-    @PostMapping({"/payments", "/profiles", "/reports"})
-    public ResponseEntity<String> postProxy(HttpServletRequest request,
-                                            @RequestHeader("Authorization") String passcode,
+    @PostMapping("/rest/{resource}")
+    public ResponseEntity<String> postProxy(@RequestHeader("Authorization") String passcode,
+                                            @PathVariable("resource") String resource,
                                             @RequestBody String body) {
         logger.info("received new post proxy request");
 
         try {
-            return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getApiUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), processRequest(passcode, body), String.class);
+            return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getApiUrl(), resource), processRequest(passcode, body), String.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
 
     }
 
-    @DeleteMapping("/profiles/{profileId}")
+    @DeleteMapping("/rest/profiles/{profileId}")
     public ResponseEntity<String> deleteProxy(HttpServletRequest request,
                                               @RequestHeader("Authorization") String passcode) {
         logger.info("received new delete proxy request");
@@ -61,10 +61,12 @@ public class RestProxyController {
 
         String key = passcode.replace("Passcode ", "");
 
-        List<String> keys = Arrays.asList(new String(Base64.getDecoder().decode(key)).split(":"));
+        String[] keys  = new String(Base64.getDecoder().decode(key)).split(":");
+
+        if (keys.length != 2) throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
 
         Optional<GatewayRestClientProperties> properties = appProperties.getGatewayRestClients().stream()
-                .filter(property -> property.getMerchantId().equals(keys.get(0)) && property.getGatewayApiKey().equals(keys.get(1))).findFirst();
+                .filter(property -> property.getMerchantId().equals(keys[0]) && property.getGatewayApiKey().equals(keys[1])).findFirst();
 
         if (!properties.isPresent()) throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 

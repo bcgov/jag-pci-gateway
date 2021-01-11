@@ -25,6 +25,7 @@ public class PostProxyTest {
     public static final String REQUEST_URI = "/pcigw/payments";
     public static final String PASSCODE_FOUND = "Passcode bWVyY2hhbnRJZDpC";
     public static final String PASSCODE_NOT_FOUND = "Passcode bWVyY2hhbnRJZDpD";
+    public static final String PASSCODE_NOT_AUTHORIZED = "Passcode bWVyY2hhbnRJZDpDOkM=";
     public static final String BODY_200 = "{test:200}";
     public static final String BODY_400 = "{test:400}";
 
@@ -62,7 +63,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND, BODY_200);
+        ResponseEntity<String> result = sut.postProxy(PASSCODE_FOUND, "payments", BODY_200);
 
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
 
@@ -77,12 +78,11 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND, BODY_400);
+        ResponseEntity<String> result = sut.postProxy(PASSCODE_FOUND,"payments", BODY_400);
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
     }
-
 
     @Test
     @DisplayName("404: api key not found return 404")
@@ -90,9 +90,22 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND, "{test:test}");
+        ResponseEntity<String> result = sut.postProxy(PASSCODE_NOT_FOUND,"payments", "{test:test}");
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
 
     }
+
+    @Test
+    @DisplayName("401: not authorized")
+    public void withInValidApiKeyNotAuthorized() {
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setRequestURI(REQUEST_URI);
+
+        ResponseEntity<String> result = sut.postProxy(PASSCODE_NOT_AUTHORIZED,"payments", "{test:test}");
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+
+    }
+
 }
