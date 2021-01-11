@@ -36,6 +36,14 @@ jobs:
         run: |
           docker-compose up -d
       
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      
       - name: Running Integration Tests
         env:
           DOCKERIZE_VERSION: v0.6.1
@@ -51,10 +59,3 @@ jobs:
 
           ./dockerize -wait http://127.0.0.1:8080/actuator/health -timeout 120s mvn verify -f src/pci-gateway-test-runner/pom.xml
 
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
