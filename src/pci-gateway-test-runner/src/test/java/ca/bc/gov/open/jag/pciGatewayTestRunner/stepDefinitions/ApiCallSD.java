@@ -1,6 +1,6 @@
-package gov.bc.ca.open.jag.pciGatewayTestRunner.stepDefinitions;
+package ca.bc.gov.open.jag.pciGatewayTestRunner.stepDefinitions;
 
-import gov.bc.ca.open.jag.pciGatewayTestRunner.TestConfig;
+import ca.bc.gov.open.jag.pciGatewayTestRunner.TestConfig;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
