@@ -22,7 +22,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PaymentsProxyController {
+public class PaymentsProxyTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String API_URL = "http://localhost:8080";
     public static final String REQUEST_URI = "/pcigw/payments";
