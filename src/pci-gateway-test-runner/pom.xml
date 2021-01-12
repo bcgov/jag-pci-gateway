@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <io.cucumber.version>6.1.1</io.cucumber.version>
+        <io.cucumber.version>6.9.1</io.cucumber.version>
         <surefire.version>2.22.2</surefire.version>
         <compiler.version>3.8.1</compiler.version>
         <java.version>1.8</java.version>
