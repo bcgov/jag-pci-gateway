@@ -7,6 +7,12 @@ pci-gateway:
       merchant-id: A
       hash-key: B
       gateway-hash-key: C
+  api-url: ENC(yourencryptedvalue)
+  gateway-rest-clients:
+    -
+      merchant-id: A
+      api-key: B
+      gateway-api-key: C
 
 jasypt:
   encryptor:
