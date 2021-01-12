@@ -10,7 +10,11 @@ public class AppProperties {
 
     private String redirectUrl;
 
+    private String apiUrl;
+
     private List<GatewayClientProperty> gatewayClients = new ArrayList<>();
+
+    private List<GatewayRestClientProperties> gatewayRestClients = new ArrayList<>();
 
     private Proxy proxy;
 
@@ -22,12 +26,24 @@ public class AppProperties {
         this.redirectUrl = redirectUrl;
     }
 
+    public String getApiUrl() { return apiUrl; }
+
+    public void setApiUrl(String apiUrl) { this.apiUrl = apiUrl; }
+
     public List<GatewayClientProperty> getGatewayClients() {
         return gatewayClients;
     }
 
     public void setGatewayClients(List<GatewayClientProperty> gatewayClients) {
         this.gatewayClients = gatewayClients;
+    }
+
+    public List<GatewayRestClientProperties> getGatewayRestClients() {
+        return gatewayRestClients;
+    }
+
+    public void setGatewayRestClients(List<GatewayRestClientProperties> gatewayRestClients) {
+        this.gatewayRestClients = gatewayRestClients;
     }
 
     public Proxy getProxy() {
