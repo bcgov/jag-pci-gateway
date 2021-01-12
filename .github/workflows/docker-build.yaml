@@ -29,3 +29,28 @@ jobs:
       - name: Build docker image
         run: |
           docker-compose build
+
+      - name: Standup Docker Pods
+        env:
+          MVN_PROFILE: demo
+        run: |
+          docker-compose up -d
+      
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      
+      - name: Running Integration Tests
+        env:
+          DOCKERIZE_VERSION: v0.6.1
+        run: |
+
+          # We need to test if api pod and service is running before we can proceed.  Using dockerize to proceed only after port 8080 can be reached.
+          wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          tar -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+          ./dockerize -wait http://127.0.0.1:8080/actuator/health -timeout 120s mvn verify -f src/pci-gateway-test-runner/pom.xml
