@@ -7,6 +7,12 @@ pci-gateway:
       merchant-id: 1234
       hash-key: RANDOM
       gateway-hash-key: RESTASSURED
+  api-url: http://locahost:8081/anything
+  gateway-rest-clients:
+    -
+      merchant-id: 5467
+      api-key: RANDOM
+      gateway-api-key: RESTASSURED
 
 # to enable log files, comment out the following logging object and configure the path
 
