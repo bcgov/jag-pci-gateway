@@ -68,7 +68,7 @@ public class RestProxyController {
         Optional<GatewayRestClientProperties> properties = appProperties.getGatewayRestClients().stream()
                 .filter(property -> property.getMerchantId().equals(keys[0]) && property.getGatewayApiKey().equals(keys[1])).findFirst();
 
-        if (!properties.isPresent()) throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        if (!properties.isPresent()) throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", MessageFormat.format("Passcode {0}", Base64.getEncoder().encodeToString(MessageFormat.format("{0}:{1}", properties.get().getMerchantId(),properties.get().getApiKey()).getBytes())));

@@ -85,14 +85,14 @@ public class PostProxyTest {
     }
 
     @Test
-    @DisplayName("404: api key not found return 404")
+    @DisplayName("401: api key not found return 404")
     public void withInValidApiKeyBamboraCallFails() {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
         ResponseEntity<String> result = sut.postProxy(PASSCODE_NOT_FOUND,"payments", "{test:test}");
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 
     }
 
