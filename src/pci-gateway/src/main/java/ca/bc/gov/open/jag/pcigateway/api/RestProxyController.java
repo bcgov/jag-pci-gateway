@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 @Controller
-@RequestMapping("/pcigw/")
+@RequestMapping("/pcigw/v1/")
 public class RestProxyController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -32,7 +32,7 @@ public class RestProxyController {
     }
 
 
-    @PostMapping("/v1/{resource}")
+    @PostMapping("/{resource}")
     public ResponseEntity<String> postProxy(HttpServletRequest request,
                                             @RequestHeader("Authorization") String passcode,
                                             @PathVariable("resource") String resource,
@@ -47,7 +47,7 @@ public class RestProxyController {
 
     }
 
-    @DeleteMapping("/v1/profiles/{profileId}")
+    @DeleteMapping("/profiles/{profileId}")
     public ResponseEntity<String> deleteProxy(HttpServletRequest request,
                                               @RequestHeader("Authorization") String passcode) {
         logger.info("received new delete proxy request");
