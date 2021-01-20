@@ -10,7 +10,6 @@ public class AppProperties {
 
     private String redirectUrl;
 
-    private String apiUrl;
 
     private List<GatewayClientProperty> gatewayClients = new ArrayList<>();
 
@@ -25,10 +24,6 @@ public class AppProperties {
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
-
-    public String getApiUrl() { return apiUrl; }
-
-    public void setApiUrl(String apiUrl) { this.apiUrl = apiUrl; }
 
     public List<GatewayClientProperty> getGatewayClients() {
         return gatewayClients;

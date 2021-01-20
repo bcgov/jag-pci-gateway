@@ -22,7 +22,7 @@ import java.util.List;
 public class PaymentRedirectTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String REDIRECT_URL = "http://localhost:8080";
-    public static final String REQUEST_URI = "/pcigw/Payment/Payment.asp";
+    public static final String REQUEST_URI = "/pcigw/scripts/Payment/Payment.asp";
 
     private RedirectController sut;
 
