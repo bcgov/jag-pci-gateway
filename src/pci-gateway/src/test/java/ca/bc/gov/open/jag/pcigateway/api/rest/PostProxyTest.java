@@ -63,7 +63,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_FOUND, "payments", BODY_200);
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND, "payments", BODY_200);
 
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
 
@@ -78,7 +78,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_FOUND,"payments", BODY_400);
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND,"payments", BODY_400);
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
@@ -90,7 +90,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_NOT_FOUND,"payments", "{test:test}");
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND,"payments", "{test:test}");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 
@@ -102,7 +102,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_NOT_AUTHORIZED,"payments", "{test:test}");
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_NOT_AUTHORIZED,"payments", "{test:test}");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 
