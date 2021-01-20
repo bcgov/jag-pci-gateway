@@ -51,7 +51,7 @@ public class RestProxyController {
                                               @RequestHeader("Authorization") String passcode) {
         logger.info("received new delete proxy request");
         try {
-            return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getApiUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.REST)), HttpMethod.DELETE, processRequest(passcode,""), String.class);
+            return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getApiUrl(), request.getRequestURI().replace(Keys.PCIGW, "")), HttpMethod.DELETE, processRequest(passcode,""), String.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
