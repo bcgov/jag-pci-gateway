@@ -1,6 +1,6 @@
 # jag-pci-gateway
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/89aaf5706ffd314a222c/maintainability)](https://codeclimate.com/github/bcgov/jag-pci-gateway/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/89aaf5706ffd314a222c/test_coverage)](https://codeclimate.com/github/bcgov/jag-pci-gateway/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/89aaf5706ffd314a222c/maintainability)](https://codeclimate.com/github/bcgov/jag-pci-gateway/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/89aaf5706ffd314a222c/test_coverage)](https://codeclimate.com/github/bcgov/jag-pci-gateway/test_coverage) ![Integration Tests](https://github.com/bcgov/jag-pci-gateway/workflows/Integration%20Tests/badge.svg)
 
 ## Build
 
