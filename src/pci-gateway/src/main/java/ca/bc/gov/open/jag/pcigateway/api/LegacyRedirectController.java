@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
@@ -26,15 +25,15 @@ import java.text.MessageFormat;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/pcigw/scripts/")
-public class RedirectController {
+@RequestMapping("/pcigw/")
+public class LegacyRedirectController {
 
-    private Logger logger = LoggerFactory.getLogger(RedirectController.class);
+    private Logger logger = LoggerFactory.getLogger(LegacyRedirectController.class);
 
     private final AppProperties appProperties;
     private final RestTemplate restTemplate;
 
-    public RedirectController(AppProperties appProperties, RestTemplate restTemplate) {
+    public LegacyRedirectController(AppProperties appProperties, RestTemplate restTemplate) {
         this.appProperties = appProperties;
         this.restTemplate = restTemplate;
     }
@@ -43,6 +42,7 @@ public class RedirectController {
     public RedirectView requestRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         logger.info("received new redirect request");
+        logger.warn("this is legacy and will be removed");
 
         return redirectRequest(request);
 
@@ -52,6 +52,7 @@ public class RedirectController {
     public ResponseEntity<String> statusRedirect(HttpServletRequest request) throws MissingServletRequestParameterException {
 
         logger.info("received new process transaction proxy request");
+        logger.warn("this is legacy and will be removed");
 
         ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(processRequest(request), String.class);
 
@@ -87,7 +88,7 @@ public class RedirectController {
             throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
 
         return UriComponentsBuilder
-                .fromUri(URI.create(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, ""))))
+                .fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS))))
                 .queryParams(QueryStringUtils.setParam(request.getParameterMap(), Keys.PARAM_HASH_VALUE,
                         computeHash(getSecuredQueryString(request), clientProperty.getHashKey())))
                 .build().toUri();

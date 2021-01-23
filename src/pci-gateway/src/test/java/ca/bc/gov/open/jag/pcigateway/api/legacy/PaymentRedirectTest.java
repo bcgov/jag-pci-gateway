@@ -1,5 +1,6 @@
-package ca.bc.gov.open.jag.pcigateway.api.redirect;
+package ca.bc.gov.open.jag.pcigateway.api.legacy;
 
+import ca.bc.gov.open.jag.pcigateway.api.LegacyRedirectController;
 import ca.bc.gov.open.jag.pcigateway.api.RedirectController;
 import ca.bc.gov.open.jag.pcigateway.config.AppProperties;
 import ca.bc.gov.open.jag.pcigateway.config.GatewayClientProperty;
@@ -22,9 +23,9 @@ import java.util.List;
 public class PaymentRedirectTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String REDIRECT_URL = "http://localhost:8080";
-    public static final String REQUEST_URI = "/pcigw/scripts/Payment/Payment.asp";
+    public static final String REQUEST_URI = "/pcigw/Payment/Payment.asp";
 
-    private RedirectController sut;
+    private LegacyRedirectController sut;
 
     @Mock
     private RestTemplate restTemplateMock;
@@ -46,7 +47,7 @@ public class PaymentRedirectTest {
         testClient.setGatewayHashKey("5678");
         clients.add(testClient);
         appProperties.setGatewayClients(clients);
-        sut = new RedirectController(appProperties, restTemplateMock);
+        sut = new LegacyRedirectController(appProperties, restTemplateMock);
 
     }
 

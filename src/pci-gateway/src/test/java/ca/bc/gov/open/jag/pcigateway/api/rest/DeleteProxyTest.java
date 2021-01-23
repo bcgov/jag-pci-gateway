@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class DeleteProxyTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String API_URL = "http://localhost:8080";
-    public static final String REQUEST_URI = "/pcigw/profiles/123";
+    public static final String REQUEST_URI = "/pcigw/v1/profiles/123";
     public static final String PASSCODE_FOUND = "Passcode bWVyY2hhbnRJZDpC";
     public static final String PASSCODE_NOT_FOUND = "Passcode bWVyY2hhbnRJZDpD";
 
@@ -38,7 +38,7 @@ public class DeleteProxyTest {
 
         AppProperties appProperties = new AppProperties();
 
-        appProperties.setApiUrl(API_URL);
+        appProperties.setRedirectUrl(API_URL);
         List<GatewayRestClientProperties> restClients = new ArrayList<>();
         GatewayRestClientProperties testClient = new GatewayRestClientProperties();
         testClient.setMerchantId(MERCHANT_ID);

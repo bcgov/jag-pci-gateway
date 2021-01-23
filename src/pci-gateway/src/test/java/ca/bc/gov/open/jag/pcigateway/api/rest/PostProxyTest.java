@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class PostProxyTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String API_URL = "http://localhost:8080";
-    public static final String REQUEST_URI = "/pcigw/payments";
+    public static final String REQUEST_URI = "/pcigw/v1/payments";
     public static final String PASSCODE_FOUND = "Passcode bWVyY2hhbnRJZDpC";
     public static final String PASSCODE_NOT_FOUND = "Passcode bWVyY2hhbnRJZDpD";
     public static final String PASSCODE_NOT_AUTHORIZED = "Passcode bWVyY2hhbnRJZDpDOkM=";
@@ -41,7 +41,7 @@ public class PostProxyTest {
 
         AppProperties appProperties = new AppProperties();
 
-        appProperties.setApiUrl(API_URL);
+        appProperties.setRedirectUrl(API_URL);
         List<GatewayRestClientProperties> restClients = new ArrayList<>();
         GatewayRestClientProperties testClient = new GatewayRestClientProperties();
         testClient.setMerchantId(MERCHANT_ID);
@@ -63,7 +63,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_FOUND, "payments", BODY_200);
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND, "payments", BODY_200);
 
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
 
@@ -78,7 +78,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_FOUND,"payments", BODY_400);
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND,"payments", BODY_400);
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
@@ -90,7 +90,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_NOT_FOUND,"payments", "{test:test}");
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND,"payments", "{test:test}");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 
@@ -102,7 +102,7 @@ public class PostProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(PASSCODE_NOT_AUTHORIZED,"payments", "{test:test}");
+        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_NOT_AUTHORIZED,"payments", "{test:test}");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 
