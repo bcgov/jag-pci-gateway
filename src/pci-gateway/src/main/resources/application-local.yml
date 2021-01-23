@@ -7,7 +7,6 @@ pci-gateway:
       merchant-id: 1234
       hash-key: RANDOM
       gateway-hash-key: RESTASSURED
-  api-url: http://locahost:8081/anything
   gateway-rest-clients:
     -
       merchant-id: 5467
