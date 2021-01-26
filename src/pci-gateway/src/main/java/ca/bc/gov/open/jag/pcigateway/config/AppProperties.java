@@ -10,12 +10,13 @@ public class AppProperties {
 
     private String redirectUrl;
 
-
     private List<GatewayClientProperty> gatewayClients = new ArrayList<>();
 
     private List<GatewayRestClientProperties> gatewayRestClients = new ArrayList<>();
 
     private Proxy proxy;
+
+    private int timeout = 60000;
 
     public String getRedirectUrl() {
         return redirectUrl;
@@ -47,5 +48,13 @@ public class AppProperties {
 
     public void setProxy(Proxy proxy) {
         this.proxy = proxy;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 }
