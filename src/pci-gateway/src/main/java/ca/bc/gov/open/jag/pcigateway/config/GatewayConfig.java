@@ -31,6 +31,9 @@ public class GatewayConfig {
             requestFactory.setProxy(proxy);
         }
 
+        requestFactory.setConnectTimeout(60000);
+        requestFactory.setReadTimeout(60000);
+
         return new RestTemplate(requestFactory);
     }
 
