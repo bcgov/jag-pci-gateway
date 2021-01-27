@@ -3,6 +3,7 @@ package ca.bc.gov.open.jag.pcigateway.api;
 import ca.bc.gov.open.jag.pcigateway.Keys;
 import ca.bc.gov.open.jag.pcigateway.config.AppProperties;
 import ca.bc.gov.open.jag.pcigateway.config.GatewayRestClientProperties;
+import com.sun.xml.internal.ws.api.pipe.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -73,6 +74,7 @@ public class RestProxyController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", MessageFormat.format("Passcode {0}", Base64.getEncoder().encodeToString(MessageFormat.format("{0}:{1}", properties.get().getMerchantId(),properties.get().getApiKey()).getBytes())));
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
         return new HttpEntity<>(body, headers);
     }
