@@ -57,6 +57,17 @@ public class RestProxyController {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
     }
+    
+    @GetMapping("/profiles/{profileId}")
+    public ResponseEntity<String> getProxy(HttpServletRequest request,
+                                              @RequestHeader("Authorization") String passcode) {
+        logger.info("received new get proxy request");
+        try {
+            return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, "")), HttpMethod.GET, processRequest(passcode,""), String.class);
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
+        }
+    }
 
     private HttpEntity<String> processRequest(String passcode, String body) {
 
