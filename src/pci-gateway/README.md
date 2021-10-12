@@ -5,6 +5,9 @@ The following was discovered as part of building this project:
 
 # Getting Started
 
+### DEVELOPMENT Setup  
+* [Development Setup](https://justice.gov.bc.ca/wiki/display/PCIG/Development+Setup)
+
 ### Reference Documentation
 For further reference, please consider the following sections:
 
