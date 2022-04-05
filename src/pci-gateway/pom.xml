@@ -137,7 +137,7 @@
 					jacoco-maven-plugin
 				</artifactId>
 				<version>
-					0.8.6
+					0.8.8
 				</version>
 				<executions>
 					<execution>
