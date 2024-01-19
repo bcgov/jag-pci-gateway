@@ -83,6 +83,16 @@ public class RedirectController {
         if(StringUtils.isBlank(request.getParameter(Keys.PARAM_HASH_VALUE)))
             throw new MissingServletRequestParameterException("hashValue","string");
 
+        logger.info("Request MerchantId{0}", HttpServletRequestUtils.getMerchantId(request));
+        logger.info("Client MerchantId{0}", clientProperty.getMerchantId());
+
+        logger.info("Client hash key {0}", clientProperty.getGatewayHashKey());
+
+        logger.info("Request Query String{0}", request.getQueryString());
+
+        logger.info("Request hash value{0}", request.getParameter(Keys.PARAM_HASH_VALUE));
+        logger.info("Client computed hash value{0}", computeHash(request.getQueryString(), clientProperty.getGatewayHashKey()));
+
         if(!validateHash(getSecuredQueryString(request), clientProperty.getGatewayHashKey(), request.getParameter(Keys.PARAM_HASH_VALUE)))
             throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
 
@@ -99,6 +109,7 @@ public class RedirectController {
     }
 
     private boolean validateHash(String queryString, String hashKey, String hashValue) {
+
         return StringUtils.equalsIgnoreCase(hashValue, computeHash(queryString, hashKey));
     }
 
@@ -117,6 +128,11 @@ public class RedirectController {
         if(!clientProperty.isPresent()) {
             throw new MissingServletRequestParameterException("Property", "merchantId invalid");
         }
+
+        logger.info("Request MerchantId: {0}", merchantId);
+        logger.info("clientProperty MerchantId: {0}", clientProperty.getMerchantId());
+        logger.info("clientProperty HashKey is: {0}", clientProperty.getHashKey());
+        logger.info("clientProperty getGatewayHashKey is: {0}", clientProperty.getGatewayHashKey());
 
         return clientProperty.get();
     }
