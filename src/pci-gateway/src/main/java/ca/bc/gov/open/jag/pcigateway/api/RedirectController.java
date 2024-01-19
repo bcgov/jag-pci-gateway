@@ -129,11 +129,6 @@ public class RedirectController {
             throw new MissingServletRequestParameterException("Property", "merchantId invalid");
         }
 
-        logger.info("Request MerchantId: {0}", merchantId);
-        logger.info("clientProperty MerchantId: {0}", clientProperty.getMerchantId());
-        logger.info("clientProperty HashKey is: {0}", clientProperty.getHashKey());
-        logger.info("clientProperty getGatewayHashKey is: {0}", clientProperty.getGatewayHashKey());
-
         return clientProperty.get();
     }
 
