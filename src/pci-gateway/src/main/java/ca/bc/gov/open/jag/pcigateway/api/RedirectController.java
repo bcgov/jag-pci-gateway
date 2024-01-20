@@ -83,6 +83,14 @@ public class RedirectController {
         if(StringUtils.isBlank(request.getParameter(Keys.PARAM_HASH_VALUE)))
             throw new MissingServletRequestParameterException("hashValue","string");
 
+        logger.info("Request MerchantId = {0}", HttpServletRequestUtils.getMerchantId(request));
+        logger.info("Client MerchantId = {0}", clientProperty.getMerchantId());
+        logger.info("Client hash key = {0}", clientProperty.getGatewayHashKey());
+        logger.info("Request Query String = {0}", request.getQueryString());
+        logger.info("Request Secure Query String = {0}", getSecuredQueryString(request);
+        logger.info("Request hash value = {0}", request.getParameter(Keys.PARAM_HASH_VALUE));
+        logger.info("Client computed hash value = {0}", computeHash(getSecuredQueryString(request), clientProperty.getGatewayHashKey()));
+
         if(!validateHash(getSecuredQueryString(request), clientProperty.getGatewayHashKey(), request.getParameter(Keys.PARAM_HASH_VALUE)))
             throw new MissingServletRequestParameterException("Hash", "Hash is invalid");
 
