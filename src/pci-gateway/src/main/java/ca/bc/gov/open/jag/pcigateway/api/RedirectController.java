@@ -87,7 +87,7 @@ public class RedirectController {
         logger.info("Client MerchantId = {0}", clientProperty.getMerchantId());
         logger.info("Client hash key = {0}", clientProperty.getGatewayHashKey());
         logger.info("Request Query String = {0}", request.getQueryString());
-        logger.info("Request Secure Query String = {0}", getSecuredQueryString(request);
+        logger.info("Request Secure Query String = {0}", getSecuredQueryString(request));
         logger.info("Request hash value = {0}", request.getParameter(Keys.PARAM_HASH_VALUE));
         logger.info("Client computed hash value = {0}", computeHash(getSecuredQueryString(request), clientProperty.getGatewayHashKey()));
 
