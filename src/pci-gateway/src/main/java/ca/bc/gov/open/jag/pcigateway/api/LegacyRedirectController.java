@@ -94,12 +94,10 @@ public class LegacyRedirectController {
                 .build().toUri();
 
         String queryStringForHashValue = StringUtils.substringBeforeLast(uri.getRawQuery(), "&" + Keys.PARAM_HASH_VALUE);
-
-        uri = UriComponentsBuilder
-                .fromUri(URI.create(MessageFormat.format("{0}/{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, Keys.SCRIPTS))))
-                .queryParams(QueryStringUtils.setParam(request.getParameterMap(), Keys.PARAM_HASH_VALUE,
-                        computeHash(queryStringForHashValue, clientProperty.getHashKey())))
+        uri = UriComponentsBuilder.fromHttpUrl(uri.toString())
+                .replaceQueryParam(Keys.PARAM_HASH_VALUE,  computeHash(queryStringForHashValue, clientProperty.getHashKey()))
                 .build().toUri();
+
         return uri;
 
     }

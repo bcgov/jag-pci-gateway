@@ -77,10 +77,9 @@ public class PaymentRedirectTest {
         mockHttpServletRequest.setParameter("hashValue", "C059DCA04117EB205AA32521D46AF4D0");
         mockHttpServletRequest.setParameter("otherparams", "otherparams");
         mockHttpServletRequest.setQueryString(MessageFormat.format("merchant_id=merchantId&hashValue={0}&otherparams=otherparams", "C059DCA04117EB205AA32521D46AF4D0"));
-
         RedirectView result = sut.requestRedirect(mockHttpServletRequest);
 
-        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=0F69EAC97FBB07CB1537A5EDB2DA8A0F&otherparams=otherparams", result.getUrl());
+        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&otherparams=otherparams&hashValue=0F69EAC97FBB07CB1537A5EDB2DA8A0F", result.getUrl());
     }
 
     @Test
