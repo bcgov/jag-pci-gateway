@@ -100,16 +100,6 @@ public class RedirectController {
                         computeHash(queryStringForHashValue, clientProperty.getHashKey())))
                 .build().toUri();
 
-        logger.info("HttpServletRequest query string = {}", request.getQueryString());
-        logger.info("Client Gateway Hash Key = {}", clientProperty.getGatewayHashKey());
-        logger.info("========= Computing hash value for redirect URL =========");
-        logger.info("Using query string = {}", queryStringForHashValue);
-        logger.info("Using hash key = {}", clientProperty.getHashKey());
-        logger.info("Computed hash value for redirect url = {}", computeHash(queryStringForHashValue, clientProperty.getHashKey()));
-        logger.info("========= Computing hash value for redirect URL Done=========");
-
-        logger.info("Redirect url = {}",  uri.toString());
-
         return uri;
 
     }
