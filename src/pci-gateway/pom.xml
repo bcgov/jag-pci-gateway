@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ca.bc.gov.open.jag</groupId>
 	<artifactId>pci-gateway</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 	<name>pci-gateway</name>
 	<description>PCI Gateway Api</description>
 
@@ -177,7 +177,7 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>spring-milestones</id>
+			<id>spring-repo-milestone</id>
 			<name>Spring Milestones</name>
 			<url>https://repo.spring.io/milestone</url>
 		</repository>
