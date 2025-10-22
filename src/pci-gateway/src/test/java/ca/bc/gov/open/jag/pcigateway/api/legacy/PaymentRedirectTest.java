@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -58,11 +59,11 @@ public class PaymentRedirectTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-
+        mockHttpServletRequest.setParameter("hashValue", "C059DCA04117EB205AA32521D46AF4D0");
+        mockHttpServletRequest.setQueryString("merchant_id=merchantId&hashValue=C059DCA04117EB205AA32521D46AF4D0");
         RedirectView result = sut.requestRedirect(mockHttpServletRequest);
 
-        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413", result.getUrl());
+        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=0F69EAC97FBB07CB1537A5EDB2DA8A0F", result.getUrl());
 
     }
 
@@ -73,13 +74,12 @@ public class PaymentRedirectTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
+        mockHttpServletRequest.setParameter("hashValue", "C059DCA04117EB205AA32521D46AF4D0");
         mockHttpServletRequest.setParameter("otherparams", "otherparams");
-
+        mockHttpServletRequest.setQueryString(MessageFormat.format("merchant_id=merchantId&hashValue={0}&otherparams=otherparams", "C059DCA04117EB205AA32521D46AF4D0"));
         RedirectView result = sut.requestRedirect(mockHttpServletRequest);
 
-        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413&otherparams=otherparams", result.getUrl());
-
+        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=0F69EAC97FBB07CB1537A5EDB2DA8A0F&otherparams=otherparams", result.getUrl());
     }
 
     @Test
@@ -87,30 +87,36 @@ public class PaymentRedirectTest {
     public void testVariationOfMerchantId() throws MissingServletRequestParameterException {
 
 
-        String[] merchantIdKeys = new String[] {
-                "merchantid",
-                "Merchantid",
-                "merchantId",
-                "MerchantId",
-                "merchant_id",
-                "Merchant_id",
-                "merchant_Id",
-                "Merchant_Id" };
+        final int MERCHANTID = 0;
+        final int gwHASHVALUE = 1;  // USING gateway-hash-key TO COMPUTE HASHVALUE
+        final int HASHVALUE = 2;    // USING hash-key TO COMPUTE HASHVALUE
 
-        for (String key :
-                merchantIdKeys) {
+        List<List<String>> queryParams = Arrays.asList(
+                Arrays.asList("merchantid", "991AC2E3AD74C10388787E58DC226F9A", "E4A7D14747F7B63A61C63CF2B20CDC9D"),
+                Arrays.asList("Merchantid", "D196E82AB7F54F727B77FA3991000024", "BD804E9A441DBAD657679A003B68EEA9"),
+                Arrays.asList("merchantId", "921A55A22915C97065F325812C7FD6B1", "AD510A412C712504BF21B1986C4D6987"),
+                Arrays.asList("MerchantId", "50F37DAF6B3347554F0064A8478206CE", "2378521011217A9421AD101D69B14890"),
+                Arrays.asList("merchant_id", "C059DCA04117EB205AA32521D46AF4D0", "0F69EAC97FBB07CB1537A5EDB2DA8A0F"),
+                Arrays.asList("Merchant_id", "40E4D58C423982D2DB1AAB0CC984686B", "70AFC4C0A3525CA8CDB1024F35731229"),
+                Arrays.asList("merchant_Id", "B88903F1850F851C1B7591D45ECD1832", "F0F033A0FAD427CB885F35124A14F624"),
+                Arrays.asList("Merchant_Id", "B52FA85E49253D497F743A81152DBAFA", "7D3CC65DDE57DD7E03260A9B51E26CD1"));
 
+
+        queryParams.forEach( params -> {
             MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
             mockHttpServletRequest.setRequestURI(REQUEST_URI);
-            mockHttpServletRequest.setParameter(key, MERCHANT_ID);
-            mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
-            RedirectView actual = sut.requestRedirect(mockHttpServletRequest);
-            String expected = MessageFormat.format(
-                    "http://localhost:8080/scripts/Payment/Payment.asp?{0}=merchantId&hashValue=E2EEA71D02D92AD968A9A63A44862413"
-                    , key);
+            mockHttpServletRequest.setParameter(params.get(MERCHANTID), MERCHANT_ID);
+            mockHttpServletRequest.setParameter("hashValue", params.get(gwHASHVALUE));
+            mockHttpServletRequest.setQueryString(MessageFormat.format("{0}={1}&hashValue={2}", params.get(MERCHANTID), MERCHANT_ID, params.get(gwHASHVALUE)));
+            RedirectView actual = null;
+            try {
+                actual = sut.requestRedirect(mockHttpServletRequest);
+            } catch (MissingServletRequestParameterException e) {
+                throw new RuntimeException(e);
+            }
+            String expected = MessageFormat.format("http://localhost:8080/scripts/Payment/Payment.asp?{0}={1}&hashValue={2}", params.get(MERCHANTID), MERCHANT_ID, params.get(HASHVALUE));
             Assertions.assertEquals(expected, actual.getUrl());
-
-        }
+        });
 
     }
 
