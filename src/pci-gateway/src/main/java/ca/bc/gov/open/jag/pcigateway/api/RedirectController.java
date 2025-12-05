@@ -132,7 +132,7 @@ public class RedirectController {
     }
 
     private String computeHash(String value, String hashKey) {
-        return DigestUtils.md5Hex(MessageFormat.format("{0}{1}", value, hashKey)).toUpperCase();
+        return DigestUtils.sha256Hex(MessageFormat.format("{0}{1}", value, hashKey));
     }
 
 }

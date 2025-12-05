@@ -12,13 +12,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.text.MessageFormat;
 import java.util.*;
 
 @Controller
 @RequestMapping("/pcigw/v1/")
+@Validated
 public class RestProxyController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -34,9 +38,9 @@ public class RestProxyController {
 
     @PostMapping("/{resource}")
     public ResponseEntity<String> postProxy(HttpServletRequest request,
-                                            @RequestHeader("Authorization") String passcode,
-                                            @PathVariable("resource") String resource,
-                                            @RequestBody String body) {
+                                            @RequestHeader("Authorization") @NotBlank String passcode,
+                                            @PathVariable("resource") @NotBlank @Pattern(regexp="[a-zA-Z0-9_-]+") String resource,
+                                            @RequestBody @NotBlank String body) {
         logger.info("received new post proxy request");
 
         try {
@@ -49,7 +53,8 @@ public class RestProxyController {
 
     @DeleteMapping("/profiles/{profileId}")
     public ResponseEntity<String> deleteProxy(HttpServletRequest request,
-                                              @RequestHeader("Authorization") String passcode) {
+                                              @RequestHeader("Authorization") @NotBlank String passcode,
+                                              @PathVariable("profileId") @NotBlank String profileId) {
         logger.info("received new delete proxy request");
         try {
             return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, "")), HttpMethod.DELETE, processRequest(passcode,""), String.class);
@@ -60,7 +65,8 @@ public class RestProxyController {
     
     @GetMapping("/profiles/{profileId}")
     public ResponseEntity<String> getProxy(HttpServletRequest request,
-                                              @RequestHeader("Authorization") String passcode) {
+                                              @RequestHeader("Authorization") @NotBlank String passcode,
+                                              @PathVariable("profileId") @NotBlank String profileId) {
         logger.info("received new get proxy request");
         try {
             return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, "")), HttpMethod.GET, processRequest(passcode,""), String.class);

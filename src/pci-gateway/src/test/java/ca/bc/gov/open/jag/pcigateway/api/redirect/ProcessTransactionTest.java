@@ -55,8 +55,9 @@ public class ProcessTransactionTest {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        mockHttpServletRequest.setParameter("hashValue", "810AB4ECB7C361D2FCEEEABD2F7994EA");
+        mockHttpServletRequest.setParameter("hashValue", "cf7cfe6ca7aed24249da5e7c7c465b49c9b0bddb69f875f4f4ac863ceda1e085");
         mockHttpServletRequest.setParameter("otherparams", "otherparams");
+        mockHttpServletRequest.setQueryString("merchant_id=merchantId&hashValue=cf7cfe6ca7aed24249da5e7c7c465b49c9b0bddb69f875f4f4ac863ceda1e085&otherparams=otherparams");
 
         ResponseEntity<String> actual = sut.statusRedirect(mockHttpServletRequest);
 

@@ -89,7 +89,7 @@ public class ApiCallSD {
 
     private String getHash(String message) {
 
-        String digest = DigestUtils.md5Hex(MessageFormat.format("{0}{1}", message, pciGatewayKey));
+        String digest = DigestUtils.sha256Hex(MessageFormat.format("{0}{1}", message, pciGatewayKey));
         return digest.toUpperCase();
 
     }
