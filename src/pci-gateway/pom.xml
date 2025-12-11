@@ -19,6 +19,20 @@
 		<log4j2.version>2.23.1</log4j2.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Maven Central</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
 
 		<dependency>
@@ -82,10 +96,21 @@
 
 			<id>splunk</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 
 			<repositories>
+				<repository>
+					<id>central</id>
+					<name>Maven Central</name>
+					<url>https://repo.maven.apache.org/maven2</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
 				<repository>
 					<id>splunk-artifactory</id>
 					<name>Splunk Releases</name>
