@@ -81,6 +81,9 @@
 		<profile>
 
 			<id>splunk</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
 
 			<repositories>
 				<repository>
