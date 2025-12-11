@@ -68,7 +68,7 @@ public class GetProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.getProxy(mockHttpServletRequest, PASSCODE_FOUND);
+        ResponseEntity<String> result = sut.getProxy(mockHttpServletRequest, PASSCODE_FOUND, "12345");
 
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
 
@@ -83,7 +83,7 @@ public class GetProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.getProxy(mockHttpServletRequest, PASSCODE_FOUND);
+        ResponseEntity<String> result = sut.getProxy(mockHttpServletRequest, PASSCODE_FOUND, "12345");
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
@@ -96,7 +96,7 @@ public class GetProxyTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.getProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND);
+        ResponseEntity<String> result = sut.getProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND, "12345");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 

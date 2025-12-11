@@ -59,11 +59,11 @@ public class PaymentRedirectTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        mockHttpServletRequest.setParameter("hashValue", "C059DCA04117EB205AA32521D46AF4D0");
-        mockHttpServletRequest.setQueryString("merchant_id=merchantId&hashValue=C059DCA04117EB205AA32521D46AF4D0");
+        mockHttpServletRequest.setParameter("hashValue", "CF7CFE6CA7AED24249DA5E7C7C465B49C9B0BDDB69F875F4F4AC863CEDA1E085");
+        mockHttpServletRequest.setQueryString("merchant_id=merchantId&hashValue=CF7CFE6CA7AED24249DA5E7C7C465B49C9B0BDDB69F875F4F4AC863CEDA1E085");
         RedirectView result = sut.requestRedirect(mockHttpServletRequest);
 
-        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=0F69EAC97FBB07CB1537A5EDB2DA8A0F", result.getUrl());
+        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=3503fe6789f9552efebf39de20b1735c9a969ebe9a6991d4164b2575fdeac723", result.getUrl());
 
     }
 
@@ -74,12 +74,12 @@ public class PaymentRedirectTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
         mockHttpServletRequest.setParameter("merchant_id", MERCHANT_ID);
-        mockHttpServletRequest.setParameter("hashValue", "C059DCA04117EB205AA32521D46AF4D0");
+        mockHttpServletRequest.setParameter("hashValue", "CF7CFE6CA7AED24249DA5E7C7C465B49C9B0BDDB69F875F4F4AC863CEDA1E085");
         mockHttpServletRequest.setParameter("otherparams", "otherparams");
-        mockHttpServletRequest.setQueryString(MessageFormat.format("merchant_id=merchantId&hashValue={0}&otherparams=otherparams", "C059DCA04117EB205AA32521D46AF4D0"));
+        mockHttpServletRequest.setQueryString(MessageFormat.format("merchant_id=merchantId&hashValue={0}&otherparams=otherparams", "CF7CFE6CA7AED24249DA5E7C7C465B49C9B0BDDB69F875F4F4AC863CEDA1E085"));
         RedirectView result = sut.requestRedirect(mockHttpServletRequest);
 
-        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=0F69EAC97FBB07CB1537A5EDB2DA8A0F&otherparams=otherparams", result.getUrl());
+        Assertions.assertEquals("http://localhost:8080/scripts/Payment/Payment.asp?merchant_id=merchantId&hashValue=3503fe6789f9552efebf39de20b1735c9a969ebe9a6991d4164b2575fdeac723&otherparams=otherparams", result.getUrl());
     }
 
     @Test
@@ -92,14 +92,14 @@ public class PaymentRedirectTest {
         final int HASHVALUE = 2;    // USING hash-key TO COMPUTE HASHVALUE
 
         List<List<String>> queryParams = Arrays.asList(
-                Arrays.asList("merchantid", "991AC2E3AD74C10388787E58DC226F9A", "E4A7D14747F7B63A61C63CF2B20CDC9D"),
-                Arrays.asList("Merchantid", "D196E82AB7F54F727B77FA3991000024", "BD804E9A441DBAD657679A003B68EEA9"),
-                Arrays.asList("merchantId", "921A55A22915C97065F325812C7FD6B1", "AD510A412C712504BF21B1986C4D6987"),
-                Arrays.asList("MerchantId", "50F37DAF6B3347554F0064A8478206CE", "2378521011217A9421AD101D69B14890"),
-                Arrays.asList("merchant_id", "C059DCA04117EB205AA32521D46AF4D0", "0F69EAC97FBB07CB1537A5EDB2DA8A0F"),
-                Arrays.asList("Merchant_id", "40E4D58C423982D2DB1AAB0CC984686B", "70AFC4C0A3525CA8CDB1024F35731229"),
-                Arrays.asList("merchant_Id", "B88903F1850F851C1B7591D45ECD1832", "F0F033A0FAD427CB885F35124A14F624"),
-                Arrays.asList("Merchant_Id", "B52FA85E49253D497F743A81152DBAFA", "7D3CC65DDE57DD7E03260A9B51E26CD1"));
+                Arrays.asList("merchantid", "9bc3ec6cbc611883eef296c8f1b63a3521d74da00034a1c9d7321546edb98e18", "c81a3d3430c80798d5b89f44b0890d92c3f9179fba3a64c16ca768a521014ede"),
+                Arrays.asList("Merchantid", "43aec5cd2eb8983532625047ac9e6f4f38a9a0eed1b3b3639dae17d382157fd3", "0c4bd80823d3e11887a46109e1f01e539cef0ecada993cbfa503c1f1ec67dc06"),
+                Arrays.asList("merchantId", "1588b33d9373a0c5b8508a360458919c6d8ec6c691b6594f663abccf110b2d15", "60ed128ba57c17c64e5e94f087aaa1dfa765c827ce9ed04e82556f09c7698968"),
+                Arrays.asList("MerchantId", "38afa44abf609e918c5edb3512fc1b7c135e682e8f443ce50dd9ccd634cf03bc", "9caaae253df231a367e015cb6fa2c9a8b1f4e214d6df76a38d724da03fe53772"),
+                Arrays.asList("merchant_id", "cf7cfe6ca7aed24249da5e7c7c465b49c9b0bddb69f875f4f4ac863ceda1e085", "3503fe6789f9552efebf39de20b1735c9a969ebe9a6991d4164b2575fdeac723"),
+                Arrays.asList("Merchant_id", "9925496503e3c50e6a730428a06ab57525d2b166c8c0a77fb48973aa0ac1d0a2", "741ae352f285eb7c0b1e197f185d49f245762973c72c048e92da751b4426effe"),
+                Arrays.asList("merchant_Id", "e70d8ab94df4fde6046a566ce6d0d2f9a5bb9dc595b6f80b40d6890e305dc9a7", "eb4b1c03a1fb62964be9ab8e3f3060f4de6443a01377a9fcce24d881f8b4a3cd"),
+                Arrays.asList("Merchant_Id", "c17e25b020f4209f6849fbbcef347f972079db145128ec8cae9a727ad93c9def", "7e98c3edaaa11c678c49318207fe8b76efd0f383d5977f01f3885b0aaedb9bc5"));
 
 
         queryParams.forEach( params -> {
