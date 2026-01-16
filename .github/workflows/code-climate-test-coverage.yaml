@@ -37,7 +37,12 @@ jobs:
       
       # Run tests and generate coverage
       - name: Build and test with coverage
-        run: mvn -B verify -P all --file src/pom.xml
+        run: mvn -B clean verify --file src/pom.xml
+      
+      # List generated files for debugging
+      - name: List coverage report files
+        if: always()
+        run: find ${{github.workspace}}/src -name "jacoco.xml" -type f
       
       # Upload to Codecov
       - name: Upload coverage to Codecov

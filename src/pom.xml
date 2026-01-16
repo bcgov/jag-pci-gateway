@@ -13,6 +13,12 @@
 	<version>0.0.3</version>
 	<name>pci-gateway</name>
 	<description>PCI Gateway Api</description>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>pci-gateway</module>
+		<module>pci-gateway-test-runner</module>
+	</modules>
 
 	<properties>
 		<java.version>21</java.version>
