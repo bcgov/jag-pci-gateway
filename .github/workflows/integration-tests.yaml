@@ -28,13 +28,13 @@ jobs:
       # Build Docker and Run Tests
       - name: Build docker image
         run: |
-          docker-compose build
+          docker compose build
 
       - name: Standup Docker Pods
         env:
           MVN_PROFILE: demo
         run: |
-          docker-compose up -d
+          docker compose up -d
       
       - name: Cache local Maven repository
         uses: actions/cache@v4
