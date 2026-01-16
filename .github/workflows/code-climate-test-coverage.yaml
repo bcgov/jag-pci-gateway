@@ -46,4 +46,5 @@ jobs:
           files: ${{github.workspace}}/src/pci-gateway/target/site/jacoco/jacoco.xml
           flags: unittests
           name: codecov-umbrella
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false

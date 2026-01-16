@@ -157,6 +157,20 @@
 							</goal>
 						</goals>
 					</execution>
+					<!-- attached to Maven verify phase for CI/CD pipelines -->
+					<execution>
+						<id>
+							report-verify
+						</id>
+						<phase>
+							verify
+						</phase>
+						<goals>
+							<goal>
+								report
+							</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 
