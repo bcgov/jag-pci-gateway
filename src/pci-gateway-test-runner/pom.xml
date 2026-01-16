@@ -39,6 +39,12 @@
 			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Temporary work around for broken cucumber library dependency -->
         <dependency>

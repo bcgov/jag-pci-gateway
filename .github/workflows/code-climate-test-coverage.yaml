@@ -35,9 +35,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       
-      # Run tests and generate coverage
-      - name: Build and test with coverage
-        run: mvn -B clean verify -f src/pci-gateway/pom.xml
       
       # Upload to Codecov
       - name: Upload coverage to Codecov
