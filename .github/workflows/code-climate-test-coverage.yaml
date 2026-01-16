@@ -37,12 +37,10 @@ jobs:
       
       #P Push coverage to code climate
       - name: Test & publish code coverage
-        uses: paambaati/codeclimate-action@v5.0.0
+        uses: paambaati/codeclimate-action@v6.0.0
         env:
           CC_TEST_REPORTER_ID: aae899550bdc89de402e537456d007846bda71c64f7300294a61d1a68f6bfc43
           JACOCO_SOURCE_PATH: "${{github.workspace}}/src/pci-gateway/src/main/java"
-          # Pin reporter URL to avoid 404 on latest download
-          CC_TEST_REPORTER_LATEST_DOWNLOAD_URL: https://s3.amazonaws.com/codeclimate/test-reporter/test-reporter-0.11.4-linux-amd64
         with:
           # The report file must be there, otherwise Code Climate won't find it
           coverageCommand: mvn -B verify -P all --file src/pom.xml
