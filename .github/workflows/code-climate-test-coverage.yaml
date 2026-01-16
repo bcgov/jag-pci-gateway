@@ -35,13 +35,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       
-      #P Push coverage to code climate
-      - name: Test & publish code coverage
-        uses: paambaati/codeclimate-action@v2.7.4
+      # Download working CC reporter binary
+      - name: Download CC Test Reporter
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-0.11.1-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+      
+      # Run tests and generate coverage
+      - name: Build and test with coverage
+        run: mvn -B verify -P all --file src/pom.xml
+      
+      # Upload to Code Climate
+      - name: Upload coverage to Code Climate
         env:
           CC_TEST_REPORTER_ID: aae899550bdc89de402e537456d007846bda71c64f7300294a61d1a68f6bfc43
-          JACOCO_SOURCE_PATH: "${{github.workspace}}/src/pci-gateway/src/main/java"
-        with:
-          # The report file must be there, otherwise Code Climate won't find it
-          coverageCommand: mvn -B verify -P all --file src/pom.xml
-          coverageLocations: ${{github.workspace}}/src/pci-gateway/target/site/jacoco/jacoco.xml:jacoco
+        run: |
+          ./cc-test-reporter format-coverage -t jacoco ${{github.workspace}}/src/pci-gateway/target/site/jacoco/jacoco.xml
+          ./cc-test-reporter upload-coverage
