@@ -11,7 +11,7 @@ jobs:
     name: Build docker images
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # In this step, this action saves a list of existing images,
       # the cache is created without them in the post run.
@@ -37,7 +37,7 @@ jobs:
           docker-compose up -d
       
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
