@@ -76,6 +76,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>5.3.39</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -119,29 +126,35 @@
 
 			<!-- jacoco code coverage -->
 			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.11</version>
+				<groupId>
+					org.jacoco
+				</groupId>
+				<artifactId>
+					jacoco-maven-plugin
+				</artifactId>
+				<version>
+					0.8.11
+				</version>
 				<executions>
 					<execution>
 						<goals>
-							<goal>prepare-agent</goal>
+							<goal>
+								prepare-agent
+							</goal>
 						</goals>
 					</execution>
 					<!-- attached to Maven test phase -->
 					<execution>
-						<id>report</id>
-						<phase>test</phase>
+						<id>
+							report
+						</id>
+						<phase>
+							test
+						</phase>
 						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-					<!-- attached to Maven verify phase for CI/CD pipelines -->
-					<execution>
-						<id>report-verify</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report</goal>
+							<goal>
+								report
+							</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -150,20 +163,6 @@
 		</plugins>
 	</build>
 
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-repo-milestone</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-	</repositories>
+	<!-- Using released Spring Cloud BOM; no additional snapshot/milestone repos required. -->
 
 </project>
