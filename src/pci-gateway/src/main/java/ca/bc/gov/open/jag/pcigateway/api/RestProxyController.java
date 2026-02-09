@@ -47,6 +47,18 @@ public class RestProxyController {
 
     }
 
+    @PutMapping("/profiles/{profileId}")
+    public ResponseEntity<String> putProxy(HttpServletRequest request,
+                                           @RequestHeader("Authorization") String passcode,
+                                           @RequestBody String body) {
+        logger.info("received new put proxy request");
+        try {
+            return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, "")), HttpMethod.PUT, processRequest(passcode, body), String.class);
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
+        }
+    }
+
     @DeleteMapping("/profiles/{profileId}")
     public ResponseEntity<String> deleteProxy(HttpServletRequest request,
                                               @RequestHeader("Authorization") String passcode) {
