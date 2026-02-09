@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class PutProxyTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String API_URL = "http://localhost:8080";
-    public static final String REQUEST_URI = "/pcigw/v1/payments";
+    public static final String REQUEST_URI = "/pcigw/v1/profile/123";
     public static final String PASSCODE_FOUND = "Passcode bWVyY2hhbnRJZDpC";
     public static final String PASSCODE_NOT_FOUND = "Passcode bWVyY2hhbnRJZDpD";
     public static final String PASSCODE_NOT_AUTHORIZED = "Passcode bWVyY2hhbnRJZDpDOkM=";
