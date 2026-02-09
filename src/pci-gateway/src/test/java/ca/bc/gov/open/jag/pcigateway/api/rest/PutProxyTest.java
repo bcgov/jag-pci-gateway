@@ -19,7 +19,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PostProxyTest {
+public class PutProxyTest {
     private static final String MERCHANT_ID = "merchantId";
     private static final String API_URL = "http://localhost:8080";
     public static final String REQUEST_URI = "/pcigw/v1/payments";
@@ -58,12 +58,12 @@ public class PostProxyTest {
     @DisplayName("200: call to bambora succeeded")
     public void withValidApiKeyCallBambora() {
 
-        Mockito.when(restTemplateMock.postForEntity(ArgumentMatchers.isA(String.class), any(), any())).thenReturn(ResponseEntity.ok(""));
+        Mockito.when(restTemplateMock.exchange(ArgumentMatchers.isA(String.class), any(), any(), ArgumentMatchers.<Class<String>>any())).thenReturn(ResponseEntity.ok(""));
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND, "payments", BODY_200);
+        ResponseEntity<String> result = sut.putProxy(mockHttpServletRequest, PASSCODE_FOUND, BODY_200);
 
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
 
@@ -73,12 +73,12 @@ public class PostProxyTest {
     @DisplayName("400: call to bambora failed")
     public void withValidApiKeyBamboraCallFails() {
 
-        Mockito.when(restTemplateMock.postForEntity(ArgumentMatchers.isA(String.class), any(), any())).thenReturn(ResponseEntity.badRequest().body(""));
+        Mockito.when(restTemplateMock.exchange(ArgumentMatchers.isA(String.class), any(), any(), ArgumentMatchers.<Class<String>>any())).thenReturn(ResponseEntity.badRequest().body(""));
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_FOUND,"payments", BODY_400);
+        ResponseEntity<String> result = sut.putProxy(mockHttpServletRequest, PASSCODE_FOUND, BODY_400);
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
@@ -87,10 +87,11 @@ public class PostProxyTest {
     @Test
     @DisplayName("401: api key not found return 404")
     public void withInValidApiKeyBamboraCallFails() {
+
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND,"payments", "{test:test}");
+        ResponseEntity<String> result = sut.putProxy(mockHttpServletRequest, PASSCODE_NOT_FOUND, "{test:test}");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 
@@ -99,10 +100,11 @@ public class PostProxyTest {
     @Test
     @DisplayName("401: not authorized")
     public void withInValidApiKeyNotAuthorized() {
+
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(REQUEST_URI);
 
-        ResponseEntity<String> result = sut.postProxy(mockHttpServletRequest, PASSCODE_NOT_AUTHORIZED,"payments", "{test:test}");
+        ResponseEntity<String> result = sut.putProxy(mockHttpServletRequest, PASSCODE_NOT_AUTHORIZED, "{test:test}");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
 
