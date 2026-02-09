@@ -53,7 +53,13 @@ public class RestProxyController {
                                            @RequestBody String body) {
         logger.info("received new put proxy request");
         try {
-            return this.restTemplate.exchange(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, "")), HttpMethod.PUT, processRequest(passcode, body), String.class);
+            String requestUri = request.getRequestURI();
+            String sanitizedPath = requestUri.replace(Keys.PCIGW, "");
+            return this.restTemplate.exchange(
+                    MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), sanitizedPath),
+                    HttpMethod.PUT,
+                    processRequest(passcode, body),
+                    String.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
