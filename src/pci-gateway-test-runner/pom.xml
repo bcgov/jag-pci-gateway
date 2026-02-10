@@ -84,6 +84,12 @@
 			<artifactId>extentreports-cucumber6-adapter</artifactId>
 			<version>2.6.0</version>
 			<scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 
 		<dependency>
@@ -103,7 +109,15 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.16</version>
+                        </path>
+                    </annotationProcessorPaths>
 				</configuration>
+
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
