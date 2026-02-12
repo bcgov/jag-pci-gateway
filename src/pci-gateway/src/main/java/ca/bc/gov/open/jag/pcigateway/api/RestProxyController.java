@@ -41,8 +41,10 @@ public class RestProxyController {
         logger.info("received new post proxy request");
 
         try {
+            logger.info("Temp body debug {}", body);
             return this.restTemplate.postForEntity(MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), request.getRequestURI().replace(Keys.PCIGW, "")), processRequest(passcode, body), String.class);
         } catch (HttpStatusCodeException e) {
+            logger.error("Error sending to bamabora", e);
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
 
