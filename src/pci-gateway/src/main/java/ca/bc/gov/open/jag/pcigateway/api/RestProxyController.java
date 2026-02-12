@@ -96,7 +96,12 @@ public class RestProxyController {
 
         String key = passcode.replace("Passcode ", "");
 
+        logger.info("key {}", key);
+
         String[] keys  = new String(Base64.getDecoder().decode(key)).split(":");
+
+        logger.info("size {}", keys.length);
+        logger.info("postion 1 {}", keys[0]);
 
         if (keys.length != 2) throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
 
