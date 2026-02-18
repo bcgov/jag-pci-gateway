@@ -12,6 +12,8 @@ jobs:
     
     name: Build, Run Test and upload test coverage
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       
