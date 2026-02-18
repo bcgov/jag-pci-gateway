@@ -1,49 +1,33 @@
-
-name: Code Coverage
-
+name: Build/Unit Tests
+permissions:
+  contents: read
 on:
   push:
     branches: [main]
   pull_request:
-   branches: [main]
-    
+    branches: [main]
 jobs:
-  coverage:
-    
-    name: Build, Run Test and upload test coverage
+  spring:
+    name: App Build and Test
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    
-    steps:
-      
-      # Checkout Project
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    env:
+      ACTION_DEBUG: true
 
+    steps:   
+      
       # Setup Java Environment
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
         with:
-          distribution: temurin
-          java-version: '21'
-      
-      # Cache maven dependencies
-      - name: Cache Java Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      
-      
-      # Upload to Codecov
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ${{github.workspace}}/src/pci-gateway/target/site/jacoco/jacoco.xml
-          flags: unittests
-          name: codecov-umbrella
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false
+          java-version: 1.8
+          
+          cache: maven
+
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+     # Run Maven Verify      
+      - name: Build with Maven
+        run: mvn -B install -P all --file src/pom.xml
+
+    #Removed code climate
