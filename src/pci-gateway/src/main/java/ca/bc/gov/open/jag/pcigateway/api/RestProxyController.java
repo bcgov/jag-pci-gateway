@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
@@ -45,6 +46,26 @@ public class RestProxyController {
             return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
 
+    }
+
+    @PutMapping("/profiles/{profileId}")
+    public ResponseEntity<String> putProxy(HttpServletRequest request,
+                                           @RequestHeader("Authorization") String passcode,
+                                           @RequestBody String body) {
+        logger.info("received new put proxy request");
+        try {
+
+            String sanitizedPath =  UriUtils.encodePath(request.getRequestURI().replace(Keys.PCIGW, ""), "UTF-8");
+
+            return this.restTemplate.exchange(
+                    MessageFormat.format("{0}{1}", appProperties.getRedirectUrl(), sanitizedPath),
+                    HttpMethod.PUT,
+                    processRequest(passcode, body),
+                    String.class);
+
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
+        }
     }
 
     @DeleteMapping("/profiles/{profileId}")
