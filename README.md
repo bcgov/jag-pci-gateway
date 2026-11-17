@@ -22,6 +22,64 @@ mvn clean package -f src/pci-gateway/pom.xml
 java -Djasypt.encryptor.password=<yoursecret> -jar pci-gateway-0.0.1-SNAPSHOT.jar --spring.config.location=file:application.yml
 ```
 
+## REST proxy API
+
+The gateway proxies requests under `/pcigw/v1/` to the configured payment gateway API. All routes require an `Authorization` header in this format:
+
+```text
+Authorization: Passcode <base64(merchantId:gatewayApiKey)>
+```
+
+The gateway validates the merchant ID and gateway API key, then forwards the request using the configured upstream API key.
+
+| Method | Route | Request |
+| --- | --- | --- |
+| `POST` | `/pcigw/v1/{resource}` | JSON request body; `{resource}` is one path segment. |
+| `GET` | `/pcigw/v1/profiles/{profileId}` | No request body. |
+| `PUT` | `/pcigw/v1/profiles/{profileId}` | JSON request body. |
+| `DELETE` | `/pcigw/v1/profiles/{profileId}` | No request body. |
+
+For `POST` and `PUT`, the gateway forwards the request body as JSON. It returns the upstream response status, headers, and body; upstream HTTP error responses are relayed with their status and body. Payload schemas are defined by the upstream API, not by this gateway. Invalid or unrecognized credentials return `401 Unauthorized`.
+
+### Consuming the REST API
+
+You need a merchant ID and gateway API key from the gateway operator (the `merchant-id` and `gateway-api-key` values under `pci-gateway.gateway-rest-clients`). The real upstream API key is never exposed to consumers.
+
+Build the `Authorization` header by Base64-encoding `merchantId:gatewayApiKey`. For example, merchant `A` with gateway key `B`:
+
+```bash
+echo -n "A:B" | base64   # QTpC
+```
+
+The decoded value must split into exactly two parts on `:`, so the merchant ID and key must not contain `:`.
+
+```bash
+# Create a payment (or any other resource)
+curl -X POST https://<gateway-host>/pcigw/v1/payments \
+  -H "Authorization: Passcode QTpC" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 10.00, "payment_method": "card"}'
+
+# Read, update and delete a profile
+curl https://<gateway-host>/pcigw/v1/profiles/123 -H "Authorization: Passcode QTpC"
+
+curl -X PUT https://<gateway-host>/pcigw/v1/profiles/123 \
+  -H "Authorization: Passcode QTpC" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Doe"}'
+
+curl -X DELETE https://<gateway-host>/pcigw/v1/profiles/123 -H "Authorization: Passcode QTpC"
+```
+
+Responses:
+
+- Success: the upstream status and body are returned unchanged.
+- Upstream 4xx/5xx: relayed with the original status and body.
+- Unknown merchant ID or key, or a malformed passcode: `401` with an empty body.
+- Missing `Authorization` header: `400`.
+
+The REST routes do not use `merchant_id` or `hashValue` query parameters; those apply only to the redirect routes.
+
 ## Logging
 
 ### Log files
